@@ -56,11 +56,13 @@ Comandos do Prisma devem ser executados de dentro da pasta `backend/`.
 ## Estrutura
 
 ```
-backend/    API NestJS
-frontend/   React + Vite
+backend/    API NestJS 12
+frontend/   React 19 + Vite
 docker-compose.yml
 ```
 
 ## Uso de inteligência artificial
 
-
+- Resolver problemas compatibilidade de dependências
+- Modelagem do banco de dados
+- 
