@@ -16,11 +16,16 @@ services:
       retries: 10
 
   backend:
+
     image: node:22-alpine
     working_dir: /app
-    command: sh -c "npm install && npm run start:dev"
+    command: sh -c "npm install && npx prisma migrate deploy && npm run start:dev"
+
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?schema=public
+      PORT: 3000
+      CORS_ORIGIN: ${CORS_ORIGIN}
+      
     depends_on:
       db:
         condition: service_healthy
