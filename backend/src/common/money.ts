@@ -1,4 +1,4 @@
-import Decimal from 'decimal.js';
+import { Decimal } from 'decimal.js';
 
 export function roundMoney(value: Decimal.Value): Decimal {
   return new Decimal(value).toDecimalPlaces(2, Decimal.ROUND_HALF_UP);
