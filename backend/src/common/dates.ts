@@ -15,7 +15,9 @@ export function parseBrasiliaDateTime(input: string): Date | null {
     check.getUTCMinutes() === minute;
   if (!isRealDate) return null;
 
-  return new Date(Date.UTC(year, month - 1, day, hour + BRASILIA_OFFSET_HOURS, minute));
+  return new Date(
+    Date.UTC(year, month - 1, day, hour + BRASILIA_OFFSET_HOURS, minute),
+  );
 }
 
 export function formatBrasiliaDateTime(date: Date): string {
