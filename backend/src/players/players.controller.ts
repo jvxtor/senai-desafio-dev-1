@@ -1,11 +1,14 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Res } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
 import type { Response } from 'express';
+import { ParseIdPipe } from '../common/pipes/parse-id.pipe.js';
 import { CreatePlayerDto } from './dto/create-player.dto.js';
 import type { PlayerResponse } from './player-response.js';
 import { PlayersService } from './players.service.js';
@@ -36,5 +39,15 @@ export class PlayersController {
     const player = await this.playersService.create(dto);
     response.location(`/api/v1/players/${player.id}`);
     return player;
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Consulta um jogador pelo id' })
+  @ApiOkResponse({
+    description: 'Jogador com valor de mercado e overall calculados na hora.',
+  })
+  @ApiNotFoundResponse({ description: 'Jogador inexistente ou excluído.' })
+  findOne(@Param('id', ParseIdPipe) id: number): Promise<PlayerResponse> {
+    return this.playersService.findOne(id);
   }
 }

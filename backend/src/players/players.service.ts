@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { calculateBaseValue, calculateOverall } from './player-calculator.js';
 import type { CreatePlayerDto } from './dto/create-player.dto.js';
@@ -28,6 +28,15 @@ export class PlayersService {
         potencial: dto.potential,
       },
     });
+
+    return toPlayerResponse(player);
+  }
+
+  async findOne(id: number): Promise<PlayerResponse> {
+    const player = await this.prisma.jogador.findFirst({
+      where: { id, excluidoEm: null },
+    });
+    if (!player) throw new NotFoundException('Jogador não encontrado.');
 
     return toPlayerResponse(player);
   }
