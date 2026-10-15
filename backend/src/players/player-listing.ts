@@ -37,7 +37,7 @@ export function buildWhere(
   };
 }
 
-function buildComparator(sort: string | undefined): Comparator {
+export function buildComparator(sort: string | undefined): Comparator {
   const options = (sort ?? DEFAULT_SORT).split(',') as SortOption[];
   const criteria = options.map((option) => COMPARATORS[option]);
 
