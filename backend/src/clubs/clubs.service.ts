@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Decimal } from 'decimal.js';
-import { buildComparator } from '../players/player-listing.js';
+import { SQUAD_ORDER } from '../players/player-listing.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { calculateSquadValue } from './club-calculator.js';
 import {
@@ -19,7 +19,6 @@ import type { ListClubsQueryDto } from './dto/list-clubs-query.dto.js';
 
 const MAX_CLUBS = 20;
 const UNIQUE_VIOLATION = 'P2002';
-const SQUAD_ORDER = buildComparator('position');
 
 @Injectable()
 export class ClubsService {

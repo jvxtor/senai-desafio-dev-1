@@ -50,6 +50,8 @@ export function buildComparator(sort: string | undefined): Comparator {
   };
 }
 
+export const SQUAD_ORDER = buildComparator('position');
+
 export function applyListing(
   players: PlayerResponse[],
   query: ListPlayersQueryDto,
