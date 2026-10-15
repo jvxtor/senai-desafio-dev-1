@@ -1,6 +1,16 @@
-import { Body, Controller, Get, Param, Post, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Put,
+  Res,
+} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
+  ApiConflictResponse,
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -9,7 +19,9 @@ import {
 } from '@nestjs/swagger';
 import type { Response } from 'express';
 import { ParseIdPipe } from '../common/pipes/parse-id.pipe.js';
+import { ChangeConditionDto } from './dto/change-condition.dto.js';
 import { CreatePlayerDto } from './dto/create-player.dto.js';
+import { UpdatePlayerDto } from './dto/update-player.dto.js';
 import type { PlayerResponse } from './player-response.js';
 import { PlayersService } from './players.service.js';
 
@@ -49,5 +61,35 @@ export class PlayersController {
   @ApiNotFoundResponse({ description: 'Jogador inexistente ou excluído.' })
   findOne(@Param('id', ParseIdPipe) id: number): Promise<PlayerResponse> {
     return this.playersService.findOne(id);
+  }
+
+  @Put(':id')
+  @ApiOperation({
+    summary: 'Edita nome, posição, agilidade e idade de um jogador',
+  })
+  @ApiOkResponse({ description: 'Jogador atualizado.' })
+  @ApiBadRequestResponse({ description: 'Corpo inválido.' })
+  @ApiNotFoundResponse({ description: 'Jogador inexistente ou excluído.' })
+  @ApiConflictResponse({
+    description: 'Mudança de posição de jogador com clube ou idade menor.',
+  })
+  update(
+    @Param('id', ParseIdPipe) id: number,
+    @Body() dto: UpdatePlayerDto,
+  ): Promise<PlayerResponse> {
+    return this.playersService.update(id, dto);
+  }
+
+  @Patch(':id/condition')
+  @ApiOperation({ summary: 'Altera a condição física de um jogador' })
+  @ApiOkResponse({ description: 'Jogador com a condição atualizada.' })
+  @ApiBadRequestResponse({ description: 'Condição ausente ou inválida.' })
+  @ApiNotFoundResponse({ description: 'Jogador inexistente ou excluído.' })
+  @ApiConflictResponse({ description: 'De DOENTE direto para APTO.' })
+  changeCondition(
+    @Param('id', ParseIdPipe) id: number,
+    @Body() dto: ChangeConditionDto,
+  ): Promise<PlayerResponse> {
+    return this.playersService.changeCondition(id, dto);
   }
 }
