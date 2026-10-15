@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, PipeTransform } from '@nestjs/common';
+import { MAX_INT } from '../query-transforms.js';
 
-const MAX_INT = 2_147_483_647;
 const POSITIVE_INTEGER = /^[1-9]\d*$/;
 
 @Injectable()
