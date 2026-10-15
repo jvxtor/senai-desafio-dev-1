@@ -93,6 +93,19 @@ export class PlayersService {
     return toPlayerResponse(updated);
   }
 
+  async remove(id: number): Promise<void> {
+    const player = await this.findActive(id);
+
+    if (player.clubeId !== null) {
+      throw new ConflictException('Só jogador livre pode ser excluído.');
+    }
+
+    await this.prisma.jogador.update({
+      where: { id },
+      data: { excluidoEm: new Date() },
+    });
+  }
+
   private async findActive(id: number) {
     const player = await this.prisma.jogador.findFirst({
       where: { id, excluidoEm: null },

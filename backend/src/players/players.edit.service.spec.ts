@@ -105,6 +105,33 @@ describe('PlayersService.update', () => {
   });
 });
 
+describe('PlayersService.remove', () => {
+  it('marca o jogador livre como excluído, sem apagar nada', async () => {
+    const { service, update } = setup(stored);
+
+    await expect(service.remove(4)).resolves.toBeUndefined();
+
+    expect(update).toHaveBeenCalledWith({
+      where: { id: 4 },
+      data: { excluidoEm: expect.any(Date) },
+    });
+  });
+
+  it('recusa excluir jogador que está em um clube (409)', async () => {
+    const { service, update } = setup({ ...stored, clubeId: 1 });
+
+    await expect(service.remove(4)).rejects.toBeInstanceOf(ConflictException);
+    expect(update).not.toHaveBeenCalled();
+  });
+
+  it('responde 404 para jogador inexistente ou já excluído', async () => {
+    const { service, update } = setup(null);
+
+    await expect(service.remove(4)).rejects.toBeInstanceOf(NotFoundException);
+    expect(update).not.toHaveBeenCalled();
+  });
+});
+
 describe('PlayersService.changeCondition', () => {
   it('recusa DOENTE direto para APTO (409)', async () => {
     const { service, update } = setup({ ...stored, condicao: 'DOENTE' });
