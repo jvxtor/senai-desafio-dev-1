@@ -7,7 +7,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import type { Response } from 'express';
-import type { ClubResponse } from './club-response.js';
+import { ErrorResponse } from '../common/error-response.js';
+import { ClubResponse } from './club-response.js';
 import { ClubsService } from './clubs.service.js';
 import { CreateClubDto } from './dto/create-club.dto.js';
 
@@ -17,18 +18,27 @@ export class ClubsController {
   constructor(private readonly clubsService: ClubsService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Cria um clube com caixa inicial de 300,00' })
+  @ApiOperation({
+    summary: 'Cria um clube',
+    description:
+      'O clube nasce com 300,00 em caixa e sem jogadores. A liga aceita no máximo 20 clubes.',
+  })
   @ApiCreatedResponse({
+    type: ClubResponse,
     description: 'Clube criado.',
     headers: {
       Location: {
         description: 'Caminho do clube criado',
-        schema: { type: 'string' },
+        schema: { type: 'string', example: '/api/v1/clubs/1' },
       },
     },
   })
-  @ApiBadRequestResponse({ description: 'Nome ou sigla fora do formato.' })
+  @ApiBadRequestResponse({
+    type: ErrorResponse,
+    description: 'Nome ou sigla fora do formato.',
+  })
   @ApiConflictResponse({
+    type: ErrorResponse,
     description: 'Nome ou sigla já cadastrados, ou limite de 20 clubes.',
   })
   async create(

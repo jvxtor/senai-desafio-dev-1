@@ -1,22 +1,12 @@
 import { compareText, foldText } from '../common/text.js';
 import type { Prisma } from '../generated/prisma/client.js';
 import type { ListPlayersQueryDto } from './dto/list-players-query.dto.js';
-import type { PlayerResponse } from './player-response.js';
+import type { PlayerResponse, PlayersPage } from './player-response.js';
 import { POSITIONS, type SortOption } from './player.constants.js';
 
 export const DEFAULT_PAGE = 1;
 export const DEFAULT_LIMIT = 10;
 const DEFAULT_SORT: SortOption = 'name';
-
-export interface PlayersPage {
-  data: PlayerResponse[];
-  meta: {
-    page: number;
-    limit: number;
-    total_items: number;
-    total_pages: number;
-  };
-}
 
 type Comparator = (a: PlayerResponse, b: PlayerResponse) => number;
 
