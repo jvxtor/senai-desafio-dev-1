@@ -28,7 +28,7 @@ Aplicação com backend (NestJS + Prisma), frontend (React + Vite) e banco Postg
 
 | Serviço  | URL                          |
 | -------- | ---------------------------- |
-| API      | http://localhost:3000/api/v1 |
+| API      | http://localhost:3000        |
 | Frontend | http://localhost:5173        |
 | Banco    | localhost:5432               |
 
