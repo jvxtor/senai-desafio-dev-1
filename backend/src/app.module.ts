@@ -4,6 +4,8 @@ import { PrismaModule } from './prisma/prisma.module.js';
 import { PlayersModule } from './players/players.module.js';
 import { ClubsModule } from './clubs/clubs.module.js';
 import { MarketModule } from './market/market.module.js';
+import { LineupModule } from './lineup/lineup.module.js';
+import { MatchesModule } from './matches/matches.module.js';
 
 @Module({
   imports: [
@@ -15,6 +17,8 @@ import { MarketModule } from './market/market.module.js';
     PlayersModule,
     ClubsModule,
     MarketModule,
+    LineupModule,
+    MatchesModule,
   ],
   controllers: [],
   providers: [],
