@@ -1,11 +1,25 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Decimal } from 'decimal.js';
+import { buildComparator } from '../players/player-listing.js';
 import { PrismaService } from '../prisma/prisma.service.js';
-import { toClubResponse, type ClubResponse } from './club-response.js';
+import { calculateSquadValue } from './club-calculator.js';
+import {
+  toClubResponse,
+  toSquadPlayerResponse,
+  type ClubDetailResponse,
+  type ClubResponse,
+} from './club-response.js';
+import { buildClubComparator } from './club-sorting.js';
 import type { CreateClubDto } from './dto/create-club.dto.js';
+import type { ListClubsQueryDto } from './dto/list-clubs-query.dto.js';
 
 const MAX_CLUBS = 20;
 const UNIQUE_VIOLATION = 'P2002';
+const SQUAD_ORDER = buildComparator('position');
 
 @Injectable()
 export class ClubsService {
@@ -40,6 +54,51 @@ export class ClubsService {
       }
       throw error;
     }
+  }
+
+  async findAll(query: ListClubsQueryDto): Promise<ClubResponse[]> {
+    const [clubs, players] = await Promise.all([
+      this.prisma.clube.findMany(),
+      this.prisma.jogador.findMany({
+        where: { clubeId: { not: null }, excluidoEm: null },
+      }),
+    ]);
+
+    return clubs
+      .map((club) =>
+        toClubResponse(
+          club,
+          calculateSquadValue(players.filter((p) => p.clubeId === club.id)),
+        ),
+      )
+      .sort(buildClubComparator(query.sort ?? 'name'));
+  }
+
+  async findOne(id: number): Promise<ClubDetailResponse> {
+    const club = await this.prisma.clube.findUnique({ where: { id } });
+    if (!club) throw new NotFoundException('Clube não encontrado.');
+
+    const players = await this.prisma.jogador.findMany({
+      where: { clubeId: id, excluidoEm: null },
+      include: {
+        contratos: {
+          where: { clubeId: id, situacao: 'ATIVO' },
+          orderBy: { iniciadoEm: 'desc' },
+          take: 1,
+        },
+      },
+    });
+
+    const now = new Date();
+    const squad = players
+      .filter((player) => player.contratos.length > 0)
+      .map((player) => toSquadPlayerResponse(player, player.contratos[0], now))
+      .sort(SQUAD_ORDER);
+
+    return {
+      ...toClubResponse(club, calculateSquadValue(players)),
+      players: squad,
+    };
   }
 }
 
