@@ -15,7 +15,11 @@ export class PlayerResponse {
   /** Nome do jogador. @example "Meia Lua" */
   name!: string;
 
-  @ApiProperty({ enum: POSITIONS, example: 'MEI' })
+  @ApiProperty({
+    enum: POSITIONS,
+    example: 'MEI',
+    description: 'Posição do jogador: GOL, ZAG, LAT, MEI ou ATA.',
+  })
   position!: Position;
 
   /** Agilidade, de 1 a 100. @example 85 */
@@ -24,7 +28,12 @@ export class PlayerResponse {
   /** Idade atual, de 16 a 45. @example 25 */
   age!: number;
 
-  @ApiProperty({ enum: CONDITIONS, example: 'MAL_CONDICIONADO' })
+  @ApiProperty({
+    enum: CONDITIONS,
+    example: 'MAL_CONDICIONADO',
+    description:
+      'Condição física atual: APTO, MAL_CONDICIONADO ou DOENTE. Ela muda o valor de mercado.',
+  })
   condition!: Condition;
 
   /** Valor base, calculado uma única vez no cadastro. @example 40 */

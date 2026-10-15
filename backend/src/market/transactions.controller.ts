@@ -58,7 +58,28 @@ export class TransactionsController {
       'Mesmos filtros do histórico. Colunas separadas por ponto e vírgula, valores com vírgula decimal e fim de linha LF.',
   })
   @ApiProduces('text/csv')
-  @ApiOkResponse({ description: 'Arquivo CSV.' })
+  @ApiOkResponse({
+    description:
+      'Arquivo CSV em UTF-8, sem BOM. Sem transações, só a linha de cabeçalho.',
+    content: {
+      'text/csv': {
+        schema: {
+          type: 'string',
+          example:
+            'data_hora;tipo;jogador;valor;taxa_ou_comissao;multa;lucro;variacao_caixa\n2026-11-05T16:40:00-03:00;VENDA;Meia Lua;40,00;0,30;4,00;3,00;35,70\n',
+        },
+      },
+    },
+    headers: {
+      'Content-Disposition': {
+        description: 'Nome sugerido para o arquivo',
+        schema: {
+          type: 'string',
+          example: 'attachment; filename="historico-transacoes.csv"',
+        },
+      },
+    },
+  })
   @ApiBadRequestResponse({
     type: ErrorResponse,
     description: 'Filtro inválido.',

@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { formatBrasiliaDateTime } from '../common/dates.js';
 import type { Transacao } from '../generated/prisma/client.js';
 
@@ -26,7 +27,12 @@ export class TransactionResponse {
   /** Multa por fidelidade, 0 na compra. @example 0 */
   penalty!: number;
 
-  /** Lucro da venda, nulo na compra. @example null */
+  @ApiProperty({
+    type: Number,
+    nullable: true,
+    example: 3,
+    description: 'Lucro da venda, com sinal. Nulo na compra.',
+  })
   profit!: number | null;
 
   /** Variação do caixa, com sinal. @example -38.85 */

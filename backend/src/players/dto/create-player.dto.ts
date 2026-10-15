@@ -20,7 +20,12 @@ export class CreatePlayerDto {
   @IsPlayerName()
   name!: string;
 
-  @ApiProperty({ enum: POSITIONS, example: 'MEI' })
+  @ApiProperty({
+    enum: POSITIONS,
+    example: 'MEI',
+    description:
+      'Posição: GOL, ZAG, LAT, MEI ou ATA. Jogador com clube não muda de posição na edição.',
+  })
   @IsIn(POSITIONS)
   position!: Position;
 

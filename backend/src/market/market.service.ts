@@ -21,29 +21,10 @@ import {
   MAX_SQUAD_SIZE,
   MILLISECONDS_PER_DAY,
 } from './market-calculator.js';
-import {
-  toTransactionResponse,
-  type TransactionResponse,
-} from './transaction-response.js';
+import type { PurchaseResponse, SaleResponse } from './market-response.js';
+import { toTransactionResponse } from './transaction-response.js';
 
 const MAX_LOYALTY_DAYS = 1095;
-
-export interface PurchaseResponse extends TransactionResponse {
-  contract: {
-    purchase_value: number;
-    loyalty_until: string;
-    status: 'ATIVO';
-  };
-  club_cash: number;
-}
-
-export interface SaleResponse extends TransactionResponse {
-  purchase_value: number;
-  remaining_days: number;
-  penalty_rate: number;
-  contract_status: 'RESCINDIDO' | 'ENCERRADO';
-  club_cash: number;
-}
 
 @Injectable()
 export class MarketService {
