@@ -7,7 +7,13 @@ import { PrismaService } from '../prisma/prisma.service.js';
 import { calculateBaseValue, calculateOverall } from './player-calculator.js';
 import type { ChangeConditionDto } from './dto/change-condition.dto.js';
 import type { CreatePlayerDto } from './dto/create-player.dto.js';
+import type { ListPlayersQueryDto } from './dto/list-players-query.dto.js';
 import type { UpdatePlayerDto } from './dto/update-player.dto.js';
+import {
+  applyListing,
+  buildWhere,
+  type PlayersPage,
+} from './player-listing.js';
 import { toPlayerResponse, type PlayerResponse } from './player-response.js';
 
 @Injectable()
@@ -36,6 +42,22 @@ export class PlayersService {
     });
 
     return toPlayerResponse(player);
+  }
+
+  async findAll(query: ListPlayersQueryDto): Promise<PlayersPage> {
+    if (query.club_id !== undefined) {
+      const club = await this.prisma.clube.findUnique({
+        where: { id: query.club_id },
+        select: { id: true },
+      });
+      if (!club) throw new NotFoundException('Clube não encontrado.');
+    }
+
+    const players = await this.prisma.jogador.findMany({
+      where: buildWhere(query),
+    });
+
+    return applyListing(players.map(toPlayerResponse), query);
   }
 
   async findOne(id: number): Promise<PlayerResponse> {

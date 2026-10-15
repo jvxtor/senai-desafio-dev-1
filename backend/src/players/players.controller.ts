@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Put,
+  Query,
   Res,
 } from '@nestjs/common';
 import {
@@ -25,7 +26,9 @@ import type { Response } from 'express';
 import { ParseIdPipe } from '../common/pipes/parse-id.pipe.js';
 import { ChangeConditionDto } from './dto/change-condition.dto.js';
 import { CreatePlayerDto } from './dto/create-player.dto.js';
+import { ListPlayersQueryDto } from './dto/list-players-query.dto.js';
 import { UpdatePlayerDto } from './dto/update-player.dto.js';
+import type { PlayersPage } from './player-listing.js';
 import type { PlayerResponse } from './player-response.js';
 import { PlayersService } from './players.service.js';
 
@@ -55,6 +58,19 @@ export class PlayersController {
     const player = await this.playersService.create(dto);
     response.location(`/api/v1/players/${player.id}`);
     return player;
+  }
+
+  @Get()
+  @ApiOperation({
+    summary: 'Lista jogadores com busca, filtros, ordenação e paginação',
+  })
+  @ApiOkResponse({ description: 'Página de jogadores, com data e meta.' })
+  @ApiBadRequestResponse({
+    description: 'Parâmetro inválido ou combinação contraditória.',
+  })
+  @ApiNotFoundResponse({ description: 'Clube do filtro club_id inexistente.' })
+  findAll(@Query() query: ListPlayersQueryDto): Promise<PlayersPage> {
+    return this.playersService.findAll(query);
   }
 
   @Get(':id')
