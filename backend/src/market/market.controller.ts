@@ -16,7 +16,11 @@ import {
 } from '@nestjs/swagger';
 import { ParseIdPipe } from '../common/pipes/parse-id.pipe.js';
 import { BuyPlayerDto } from './dto/buy-player.dto.js';
-import { MarketService, type PurchaseResponse } from './market.service.js';
+import {
+  MarketService,
+  type PurchaseResponse,
+  type SaleResponse,
+} from './market.service.js';
 
 @ApiTags('Mercado')
 @Controller('players')
@@ -43,5 +47,18 @@ export class MarketController {
     @Body() dto: BuyPlayerDto,
   ): Promise<PurchaseResponse> {
     return this.marketService.buy(id, dto);
+  }
+
+  @Post(':id/sell')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Vende o jogador pelo clube em que ele está' })
+  @ApiOkResponse({
+    description:
+      'Transação de venda, com multa, comissão, crédito e novo caixa do clube.',
+  })
+  @ApiNotFoundResponse({ description: 'Jogador inexistente ou excluído.' })
+  @ApiConflictResponse({ description: 'Jogador livre, sem clube.' })
+  sell(@Param('id', ParseIdPipe) id: number): Promise<SaleResponse> {
+    return this.marketService.sell(id);
   }
 }
