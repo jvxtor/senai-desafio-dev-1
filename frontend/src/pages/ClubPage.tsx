@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
 import { BuyPlayersDialog } from '../features/clubs/BuyPlayersDialog';
 import { LineupDialog } from '../features/clubs/LineupDialog';
 import { LineupPanel } from '../features/clubs/LineupPanel';
+import { SellPlayerDialog } from '../features/clubs/SellPlayerDialog';
 import { SquadTable } from '../features/clubs/SquadTable';
 import { TransactionsPanel } from '../features/clubs/TransactionsPanel';
 import { BuyPlayerDialog } from '../features/players/BuyPlayerDialog';
@@ -18,11 +19,12 @@ import { PlayerFormDialog } from '../features/players/PlayerFormDialog';
 import { useClub } from '../hooks/clubs';
 import { useLineup } from '../hooks/lineup';
 import { formatMoney } from '../lib/format';
-import type { Player } from '../services/types';
+import type { Player, SquadPlayer } from '../services/types';
 
 type DialogState =
   | { type: 'buyList' | 'lineup' }
   | { type: 'buy' | 'sheet' | 'edit' | 'condition'; player: Player }
+  | { type: 'sell'; player: SquadPlayer }
   | null;
 
 function ClubPage() {
@@ -30,6 +32,7 @@ function ClubPage() {
   const club = useClub(clubId);
   const lineup = useLineup(clubId);
   const [dialog, setDialog] = useState<DialogState>(null);
+  const [tab, setTab] = useState('squad');
   const close = () => setDialog(null);
 
   const squad = club.data?.players ?? [];
@@ -79,7 +82,11 @@ function ClubPage() {
               />
             </div>
 
-            <Tabs defaultValue="squad" className="min-h-0 flex-1">
+            <Tabs
+              value={tab}
+              onValueChange={(next) => setTab(String(next))}
+              className="min-h-0 flex-1"
+            >
               <TabsList aria-label="Seções do clube">
                 <TabsTrigger value="squad" className="px-3">
                   Elenco ({squad.length})
@@ -109,6 +116,7 @@ function ClubPage() {
                     <SquadTable
                       players={squad}
                       onSelect={(player) => setDialog({ type: 'sheet', player })}
+                      onSell={(player) => setDialog({ type: 'sell', player })}
                     />
                   )}
                 </div>
@@ -156,6 +164,20 @@ function ClubPage() {
                 onEdit={(player) => setDialog({ type: 'edit', player })}
                 onChangeCondition={(player) => setDialog({ type: 'condition', player })}
                 onBuy={close}
+              />
+            )}
+            {dialog?.type === 'sell' && (
+              <SellPlayerDialog
+                player={dialog.player}
+                clubName={club.data.name}
+                isStarter={
+                  lineup.data?.players.some((starter) => starter.id === dialog.player.id) ?? false
+                }
+                onClose={close}
+                onViewHistory={() => {
+                  setTab('history');
+                  close();
+                }}
               />
             )}
             {dialog?.type === 'edit' && <PlayerFormDialog player={dialog.player} onClose={close} />}

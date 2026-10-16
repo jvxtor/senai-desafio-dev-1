@@ -1,4 +1,6 @@
+import { HandCoins } from 'lucide-react';
 import { Badge } from '../../components/ui/badge';
+import { Button } from '../../components/ui/button';
 import {
   Table,
   TableBody,
@@ -15,6 +17,7 @@ import { CONDITION_LABELS, CONDITION_STYLE, initialsOf, POSITION_LABELS } from '
 interface SquadTableProps {
   players: SquadPlayer[];
   onSelect: (player: SquadPlayer) => void;
+  onSell: (player: SquadPlayer) => void;
 }
 
 const HEADERS = [
@@ -26,6 +29,7 @@ const HEADERS = [
   { label: 'Valor pago', align: 'right' },
   { label: 'Fidelidade até', align: 'left' },
   { label: 'Multa', align: 'right' },
+  { label: 'Ações', align: 'right' },
 ] as const;
 
 const ALIGN_CLASS = {
@@ -36,7 +40,7 @@ const ALIGN_CLASS = {
 
 const CELL = 'px-3 py-2.5';
 
-export function SquadTable({ players, onSelect }: SquadTableProps) {
+export function SquadTable({ players, onSelect, onSell }: SquadTableProps) {
   return (
     <Table containerClassName="max-h-[28rem] min-h-0 flex-1 overflow-y-auto lg:max-h-none">
       <TableHeader className="sticky top-0 z-10 bg-background shadow-[0_1px_0_0_var(--border)]">
@@ -50,7 +54,7 @@ export function SquadTable({ players, onSelect }: SquadTableProps) {
                 ALIGN_CLASS[header.align],
               )}
             >
-              {header.label}
+              {header.label === 'Ações' ? <span className="sr-only">Ações</span> : header.label}
             </TableHead>
           ))}
         </TableRow>
@@ -114,6 +118,17 @@ export function SquadTable({ players, onSelect }: SquadTableProps) {
             </TableCell>
             <TableCell className={cn(CELL, 'text-right tabular-nums')}>
               {player.contract.penalty_rate}%
+            </TableCell>
+            <TableCell className={cn(CELL, 'text-right')}>
+              <Button
+                variant="outline"
+                size="sm"
+                aria-label={`Vender ${player.name}`}
+                onClick={() => onSell(player)}
+              >
+                <HandCoins aria-hidden="true" />
+                Vender
+              </Button>
             </TableCell>
           </TableRow>
         ))}
