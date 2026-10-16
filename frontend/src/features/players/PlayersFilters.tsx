@@ -34,7 +34,7 @@ export function PlayersFilters(props: PlayersFiltersProps) {
   }));
 
   return (
-    <section aria-label="Filtros" className="rounded-xl border bg-background p-4">
+    <section aria-label="Filtros" className="shrink-0 rounded-xl border bg-background p-4">
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <TextField
           label="Buscar por nome"

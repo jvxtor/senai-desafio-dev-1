@@ -21,7 +21,7 @@ export function PlayersToolbar(props: PlayersToolbarProps) {
   const { scope, sort, onScopeChange, onSortChange } = props;
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 border-b px-4 py-3">
+    <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-b px-4 py-3">
       <Tabs value={scope} onValueChange={(next) => onScopeChange(next as Scope)}>
         <TabsList aria-label="Mostrar">
           {SCOPES.map((item) => (

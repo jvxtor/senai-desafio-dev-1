@@ -104,8 +104,9 @@ export function PlayersTable(props: PlayersTableProps) {
   const { players, clubsById, onBuy, onEdit, onChangeCondition, onDelete } = props;
 
   return (
-    <Table>
-      <TableHeader>
+    // O quadro é o único que rola (nos dois eixos); o cabeçalho fica fixo no topo dele.
+    <Table containerClassName="h-full max-h-[28rem] overflow-y-auto lg:max-h-none">
+      <TableHeader className="sticky top-0 z-10 bg-background shadow-[0_1px_0_0_var(--border)]">
         <TableRow>
           {HEADERS.map((header) => (
             <TableHead

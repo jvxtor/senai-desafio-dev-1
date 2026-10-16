@@ -42,8 +42,8 @@ function PlayersPage() {
   }
 
   return (
-    <div className="mx-auto flex max-w-6xl flex-col gap-5">
-      <header className="flex flex-wrap items-start justify-between gap-4">
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-5 lg:h-full lg:min-h-[34rem]">
+      <header className="flex shrink-0 flex-wrap items-start justify-between gap-4">
         <div className="flex items-start gap-4">
           <span
             aria-hidden="true"
@@ -75,7 +75,10 @@ function PlayersPage() {
         onReset={filters.reset}
       />
 
-      <section aria-label="Lista de jogadores" className="rounded-xl border bg-background">
+      <section
+        aria-label="Lista de jogadores"
+        className="flex min-h-0 flex-col rounded-xl border bg-background lg:flex-1"
+      >
         <PlayersToolbar
           scope={filters.draft.scope}
           sort={filters.draft.sort}
@@ -115,9 +118,7 @@ function PlayersPage() {
           }
         >
           <div
-            className={
-              players.isPlaceholderData ? 'opacity-60 transition-opacity' : 'transition-opacity'
-            }
+            className={`min-h-0 flex-1 transition-opacity ${players.isPlaceholderData ? 'opacity-60' : ''}`}
           >
             <PlayersTable
               players={list}
@@ -130,7 +131,7 @@ function PlayersPage() {
           </div>
 
           {meta && (
-            <footer className="flex flex-wrap items-center justify-between gap-3 border-t px-4 py-3">
+            <footer className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t px-4 py-3">
               <p className="text-sm text-muted-foreground">
                 Mostrando {(meta.page - 1) * meta.limit + 1}–
                 {(meta.page - 1) * meta.limit + list.length} de {meta.total_items}{' '}
@@ -146,7 +147,7 @@ function PlayersPage() {
         </DataState>
       </section>
 
-      <p className="text-xs text-muted-foreground">
+      <p className="shrink-0 text-xs text-muted-foreground">
         Overall e valor de mercado são calculados a cada consulta. A busca ignora maiúsculas,
         minúsculas e acentos.
       </p>
