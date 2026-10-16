@@ -11,6 +11,7 @@ import {
 import { useState } from 'react';
 import { Link, NavLink, Outlet, useMatches } from 'react-router';
 import { IconButton } from '../components/common/IconButton';
+import { ClubsNav } from './ClubsNav';
 
 interface NavItem {
   label: string;
@@ -27,10 +28,7 @@ export interface RouteHandle {
 const SECTIONS: { title: string; items: NavItem[] }[] = [
   {
     title: 'Mercado',
-    items: [
-      { label: 'Jogadores', icon: Users, to: '/jogadores' },
-      { label: 'Clubes', icon: Shield, to: '/clubes' },
-    ],
+    items: [{ label: 'Jogadores', icon: Users, to: '/jogadores' }],
   },
   {
     title: 'Liga',
@@ -39,6 +37,14 @@ const SECTIONS: { title: string; items: NavItem[] }[] = [
       { label: 'Classificação', icon: Trophy },
     ],
   },
+];
+
+// No celular não há barra lateral com a lista de clubes: o menu do topo leva à tela de clubes.
+const CLUBS_ITEM: NavItem = { label: 'Clubes', icon: Shield, to: '/clubes' };
+const MOBILE_ITEMS: NavItem[] = [
+  ...SECTIONS[0].items,
+  CLUBS_ITEM,
+  ...SECTIONS.slice(1).flatMap((section) => section.items),
 ];
 
 const SIDEBAR_STORAGE_KEY = 'passe:sidebar-aberta';
@@ -80,6 +86,7 @@ function NavEntry({ item }: { item: NavItem }) {
   return (
     <NavLink
       to={item.to}
+      end
       className={({ isActive }) =>
         `${ITEM_CLASS} outline-none focus-visible:ring-3 focus-visible:ring-ring/50 ${
           isActive
@@ -96,7 +103,10 @@ function NavEntry({ item }: { item: NavItem }) {
 
 function Brand() {
   return (
-    <Link to="/" className="flex items-center gap-2.5 rounded-lg outline-none focus-visible:ring-3 focus-visible:ring-ring/50">
+    <Link
+      to="/"
+      className="flex items-center gap-2.5 rounded-lg outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+    >
       <span
         aria-hidden="true"
         className="grid size-8 place-items-center rounded-lg bg-primary text-base font-bold text-primary-foreground"
@@ -164,7 +174,8 @@ export function AppLayout() {
               </div>
             ))}
           </nav>
-          <p className="mt-auto flex items-center gap-2 px-2.5 text-xs text-muted-foreground">
+          <ClubsNav />
+          <p className="mt-auto flex shrink-0 items-center gap-2 px-2.5 text-xs text-muted-foreground">
             <Clock aria-hidden="true" className="size-3.5" />
             Horário de Brasília (UTC−3)
           </p>
@@ -174,7 +185,7 @@ export function AppLayout() {
       <header className="flex flex-col gap-2 border-b bg-background px-4 py-3 lg:hidden">
         <Brand />
         <nav aria-label="Principal" className="flex gap-1 overflow-x-auto">
-          {SECTIONS.flatMap((section) => section.items).map((item) => (
+          {MOBILE_ITEMS.map((item) => (
             <NavEntry key={item.label} item={item} />
           ))}
         </nav>
