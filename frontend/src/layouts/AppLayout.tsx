@@ -8,8 +8,8 @@ import {
   Users,
   type LucideIcon,
 } from 'lucide-react';
-import { useState } from 'react';
-import { Link, NavLink, Outlet, useMatches } from 'react-router';
+import { useState, type ComponentType } from 'react';
+import { Link, NavLink, Outlet, useMatches, type Params } from 'react-router';
 import { IconButton } from '../components/common/IconButton';
 import { ClubsNav } from './ClubsNav';
 import { useNavCounts, type NavCounts } from './useNavCounts';
@@ -21,11 +21,16 @@ interface NavItem {
   to?: string;
   /** Qual contador mostrar ao lado do nome. */
   count?: keyof NavCounts;
+  /** O item continua ativo nas telas de dentro dele (a partida aberta, por exemplo). */
+  nested?: boolean;
 }
 
 /** Cada rota pode declarar o caminho de navegação em `handle: { crumbs: [...] }`. */
+/** Um trecho da trilha: texto fixo ou um componente que descobre o texto pelos parâmetros da rota. */
+export type Crumb = string | ComponentType<{ params: Params }>;
+
 export interface RouteHandle {
-  crumbs?: string[];
+  crumbs?: Crumb[];
 }
 
 const SECTIONS: { title: string; items: NavItem[] }[] = [
@@ -39,7 +44,7 @@ const SECTIONS: { title: string; items: NavItem[] }[] = [
   {
     title: 'Liga',
     items: [
-      { label: 'Partidas', icon: Swords, to: '/partidas', count: 'matches' },
+      { label: 'Partidas', icon: Swords, to: '/partidas', count: 'matches', nested: true },
       { label: 'Classificação', icon: ListOrdered },
     ],
   },
@@ -90,7 +95,7 @@ function NavEntry({ item, counts }: { item: NavItem; counts: NavCounts }) {
   return (
     <NavLink
       to={item.to}
-      end
+      end={!item.nested}
       className={({ isActive }) =>
         `${ITEM_CLASS} outline-none focus-visible:ring-3 focus-visible:ring-ring/50 ${
           isActive
@@ -127,14 +132,17 @@ function Brand() {
 }
 
 function Breadcrumb() {
-  const crumbs = useMatches().flatMap(
-    (match) => (match.handle as RouteHandle | undefined)?.crumbs ?? [],
+  const crumbs = useMatches().flatMap((match) =>
+    ((match.handle as RouteHandle | undefined)?.crumbs ?? []).map((crumb) => ({
+      crumb,
+      params: match.params,
+    })),
   );
 
   return (
     <nav aria-label="Você está em" className="flex items-center gap-1.5 text-sm">
-      {crumbs.map((crumb, index) => (
-        <span key={crumb} className="flex items-center gap-1.5">
+      {crumbs.map(({ crumb: Crumb, params }, index) => (
+        <span key={index} className="flex items-center gap-1.5">
           {index > 0 && (
             <span aria-hidden="true" className="text-muted-foreground">
               /
@@ -144,7 +152,7 @@ function Breadcrumb() {
             aria-current={index === crumbs.length - 1 ? 'page' : undefined}
             className={index === crumbs.length - 1 ? 'font-medium' : 'text-muted-foreground'}
           >
-            {crumb}
+            {typeof Crumb === 'string' ? Crumb : <Crumb params={params} />}
           </span>
         </span>
       ))}

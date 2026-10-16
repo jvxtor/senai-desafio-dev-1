@@ -49,7 +49,7 @@ export interface Slot {
   ariaLabel: string;
 }
 
-function sectorOf(position: Position): Sector {
+export function sectorOf(position: Position): Sector {
   const found = (Object.keys(SECTOR_POSITIONS) as Sector[]).find((sector) =>
     SECTOR_POSITIONS[sector].includes(position),
   );
@@ -105,7 +105,13 @@ export function prefillPicks(formation: Formation, starters: Player[]): string[]
 const POSITION_ORDER: Position[] = ['GOL', 'ZAG', 'LAT', 'MEI', 'ATA'];
 
 /** A ordem do elenco da API: posição (goleiro ao atacante), nome sem acento e id. */
-export function compareSquad(a: Player, b: Player): number {
+export interface SquadKey {
+  position: Position;
+  name: string;
+  id: number;
+}
+
+export function compareSquad(a: SquadKey, b: SquadKey): number {
   const byPosition = POSITION_ORDER.indexOf(a.position) - POSITION_ORDER.indexOf(b.position);
   if (byPosition !== 0) return byPosition;
 
