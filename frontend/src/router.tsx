@@ -3,6 +3,7 @@ import App from './App';
 import { AppLayout, type RouteHandle } from './layouts/AppLayout';
 import ClubPage from './pages/ClubPage';
 import ClubsPage from './pages/ClubsPage';
+import MatchesPage from './pages/MatchesPage';
 import NotFound from './pages/NotFound';
 import PlayersPage from './pages/PlayersPage';
 
@@ -25,6 +26,11 @@ export const router = createBrowserRouter([
         path: '/clubes/:id',
         element: <ClubPage />,
         handle: { crumbs: ['Mercado', 'Clubes', 'Detalhes'] } satisfies RouteHandle,
+      },
+      {
+        path: '/partidas',
+        element: <MatchesPage />,
+        handle: { crumbs: ['Liga', 'Partidas'] } satisfies RouteHandle,
       },
     ],
   },

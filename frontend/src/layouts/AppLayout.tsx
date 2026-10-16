@@ -2,9 +2,9 @@ import {
   Clock,
   PanelLeftClose,
   PanelLeftOpen,
+  ListOrdered,
   Shield,
   Swords,
-  Trophy,
   Users,
   type LucideIcon,
 } from 'lucide-react';
@@ -12,12 +12,15 @@ import { useState } from 'react';
 import { Link, NavLink, Outlet, useMatches } from 'react-router';
 import { IconButton } from '../components/common/IconButton';
 import { ClubsNav } from './ClubsNav';
+import { useNavCounts, type NavCounts } from './useNavCounts';
 
 interface NavItem {
   label: string;
   icon: LucideIcon;
   /** Sem rota, o item aparece desativado até a tela existir. */
   to?: string;
+  /** Qual contador mostrar ao lado do nome. */
+  count?: keyof NavCounts;
 }
 
 /** Cada rota pode declarar o caminho de navegação em `handle: { crumbs: [...] }`. */
@@ -29,15 +32,15 @@ const SECTIONS: { title: string; items: NavItem[] }[] = [
   {
     title: 'Mercado',
     items: [
-      { label: 'Jogadores', icon: Users, to: '/jogadores' },
-      { label: 'Clubes', icon: Shield, to: '/clubes' },
+      { label: 'Jogadores', icon: Users, to: '/jogadores', count: 'players' },
+      { label: 'Clubes', icon: Shield, to: '/clubes', count: 'clubs' },
     ],
   },
   {
     title: 'Liga',
     items: [
-      { label: 'Partidas', icon: Swords },
-      { label: 'Classificação', icon: Trophy },
+      { label: 'Partidas', icon: Swords, to: '/partidas', count: 'matches' },
+      { label: 'Classificação', icon: ListOrdered },
     ],
   },
 ];
@@ -62,7 +65,13 @@ function saveSidebarPreference(open: boolean) {
   }
 }
 
-function NavEntry({ item }: { item: NavItem }) {
+// O número ao lado do nome, quando já chegou.
+function Count({ value }: { value: number | undefined }) {
+  if (value === undefined) return null;
+  return <span className="ml-auto pl-2 text-xs text-muted-foreground tabular-nums">{value}</span>;
+}
+
+function NavEntry({ item, counts }: { item: NavItem; counts: NavCounts }) {
   const Icon = item.icon;
 
   if (!item.to) {
@@ -92,6 +101,7 @@ function NavEntry({ item }: { item: NavItem }) {
     >
       <Icon aria-hidden="true" className="size-4" />
       {item.label}
+      <Count value={item.count ? counts[item.count] : undefined} />
     </NavLink>
   );
 }
@@ -143,6 +153,7 @@ function Breadcrumb() {
 }
 
 export function AppLayout() {
+  const counts = useNavCounts();
   const [sidebarOpen, setSidebarOpen] = useState(readSidebarPreference);
 
   function toggleSidebar() {
@@ -164,7 +175,7 @@ export function AppLayout() {
                   {section.title}
                 </p>
                 {section.items.map((item) => (
-                  <NavEntry key={item.label} item={item} />
+                  <NavEntry key={item.label} item={item} counts={counts} />
                 ))}
               </div>
             ))}
@@ -181,7 +192,7 @@ export function AppLayout() {
         <Brand />
         <nav aria-label="Principal" className="flex gap-1 overflow-x-auto">
           {SECTIONS.flatMap((section) => section.items).map((item) => (
-            <NavEntry key={item.label} item={item} />
+            <NavEntry key={item.label} item={item} counts={counts} />
           ))}
         </nav>
       </header>
