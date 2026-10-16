@@ -1,6 +1,6 @@
 import { Plus, Shield, Swords } from 'lucide-react';
 import { useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 import { DataState } from '../components/common/DataState';
 import { PageHeader } from '../components/common/PageHeader';
 import { FilterSelect } from '../components/filters/FilterSelect';
@@ -13,7 +13,10 @@ import { useMatches } from '../hooks/matches';
 
 function MatchesPage() {
   const [clubId, setClubId] = useState('');
-  const [creating, setCreating] = useState(false);
+  // O diálogo vive na URL (?nova=1): assim a tela de classificação também o abre daqui.
+  const [params, setParams] = useSearchParams();
+  const creating = params.get('nova') === '1';
+  const setCreating = (open: boolean) => setParams(open ? { nova: '1' } : {});
   const navigate = useNavigate();
   const openMatch = (id: number) => void navigate(`/partidas/${id}`);
 

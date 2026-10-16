@@ -45,7 +45,7 @@ const SECTIONS: { title: string; items: NavItem[] }[] = [
     title: 'Liga',
     items: [
       { label: 'Partidas', icon: Swords, to: '/partidas', count: 'matches', nested: true },
-      { label: 'Classificação', icon: ListOrdered },
+      { label: 'Classificação', icon: ListOrdered, to: '/classificacao' },
     ],
   },
 ];

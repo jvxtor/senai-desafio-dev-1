@@ -7,6 +7,7 @@ import ClubsPage from './pages/ClubsPage';
 import MatchPage from './pages/MatchPage';
 import MatchesPage from './pages/MatchesPage';
 import NotFound from './pages/NotFound';
+import StandingsPage from './pages/StandingsPage';
 import PlayersPage from './pages/PlayersPage';
 
 export const router = createBrowserRouter([
@@ -33,6 +34,11 @@ export const router = createBrowserRouter([
         path: '/partidas',
         element: <MatchesPage />,
         handle: { crumbs: ['Liga', 'Partidas'] } satisfies RouteHandle,
+      },
+      {
+        path: '/classificacao',
+        element: <StandingsPage />,
+        handle: { crumbs: ['Liga', 'Classificação'] } satisfies RouteHandle,
       },
       {
         path: '/partidas/:id',
