@@ -28,7 +28,10 @@ export interface RouteHandle {
 const SECTIONS: { title: string; items: NavItem[] }[] = [
   {
     title: 'Mercado',
-    items: [{ label: 'Jogadores', icon: Users, to: '/jogadores' }],
+    items: [
+      { label: 'Jogadores', icon: Users, to: '/jogadores' },
+      { label: 'Clubes', icon: Shield, to: '/clubes' },
+    ],
   },
   {
     title: 'Liga',
@@ -37,14 +40,6 @@ const SECTIONS: { title: string; items: NavItem[] }[] = [
       { label: 'Classificação', icon: Trophy },
     ],
   },
-];
-
-// No celular não há barra lateral com a lista de clubes: o menu do topo leva à tela de clubes.
-const CLUBS_ITEM: NavItem = { label: 'Clubes', icon: Shield, to: '/clubes' };
-const MOBILE_ITEMS: NavItem[] = [
-  ...SECTIONS[0].items,
-  CLUBS_ITEM,
-  ...SECTIONS.slice(1).flatMap((section) => section.items),
 ];
 
 const SIDEBAR_STORAGE_KEY = 'passe:sidebar-aberta';
@@ -185,7 +180,7 @@ export function AppLayout() {
       <header className="flex flex-col gap-2 border-b bg-background px-4 py-3 lg:hidden">
         <Brand />
         <nav aria-label="Principal" className="flex gap-1 overflow-x-auto">
-          {MOBILE_ITEMS.map((item) => (
+          {SECTIONS.flatMap((section) => section.items).map((item) => (
             <NavEntry key={item.label} item={item} />
           ))}
         </nav>

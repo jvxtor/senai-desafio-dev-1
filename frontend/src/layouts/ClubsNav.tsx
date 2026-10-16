@@ -13,19 +13,7 @@ export function ClubsNav() {
   return (
     <nav aria-label="Clubes" className="flex min-h-0 flex-col gap-1">
       <div className="flex shrink-0 items-center justify-between px-2.5 pb-1">
-        <NavLink
-          to="/clubes"
-          end
-          className={({ isActive }) =>
-            cn(
-              'rounded-sm text-xs font-medium',
-              FOCUS,
-              isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
-            )
-          }
-        >
-          Clubes
-        </NavLink>
+        <span className="text-xs font-medium text-muted-foreground">Clubes</span>
         <Link
           to="/clubes?novo=1"
           aria-label="Novo clube"
