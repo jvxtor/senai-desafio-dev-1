@@ -24,16 +24,15 @@ Aplicação com backend (NestJS + Prisma), frontend (React + Vite) e banco Postg
    docker compose up
    ```
 
-   Na primeira vez, o backend instala as dependências, gera o client do Prisma e aplica a migration do banco sozinho, então demora um pouco mais (vai da certo).
+   Na primeira vez, o backend instala as dependências, gera o client do Prisma e aplica a migration do banco sozinho, então demora um pouco mais (vai dar certo).
 
-   Caso deseje polular o banco de dados, aguarde a migration ser aplicada.
+   Caso deseje popular o banco de dados, aguarde a migration ser aplicada.
 
-3. Popular banco de dados (opcional):
+3. Popular o banco de dados (opcional):
 
    ```bash
    docker compose exec backend npm run db:seed
    ```
-
 
 ### Variáveis do frontend
 
@@ -74,6 +73,9 @@ O `migrate reset` já roda o seed (veja abaixo) ao terminar. Para criar o banco 
 O banco nasce vazio de propósito. Para testar a interface e a API sem cadastrar tudo à mão, rode o seed (`backend/prisma/seed`):
 
 ```bash
+# com Docker, na raiz do repositório:
+docker compose exec backend npm run db:seed
+
 # fora do Docker, dentro de backend/:
 npm run db:seed
 ```
@@ -167,16 +169,20 @@ Além da stack obrigatória (NestJS, React com Vite, PostgreSQL e Git):
 
 | Biblioteca | Motivo |
 | --- | --- |
-| `react`, `react-dom`, `vite`, `typescript` | Interface, servidor de desenvolvimento e build, com tipos |
+| `react`, `react-dom` | Interface |
+| `vite`, `@vitejs/plugin-react` | Servidor de desenvolvimento e build, com o suporte ao React |
+| `typescript`, `@types/react`, `@types/react-dom`, `@types/node` | Tipos |
 | `react-router` | Rotas das telas e trilha de navegação |
 | `@tanstack/react-query` | Cache e atualização dos dados da API depois de cada ação |
 | `axios` | Cliente HTTP, com o tratamento da mensagem de erro da API num só lugar |
 | `tailwindcss`, `@tailwindcss/vite`, `tw-animate-css` | Estilos |
-| `shadcn`, `@base-ui/react`, `class-variance-authority`, `cn`, `lucide-react`, `@fontsource-variable/geist` | Componentes do shadcn/ui (botões, tabelas, diálogos, menus, abas), seus primitivos, ícones e a fonte |
+| `shadcn`, `@base-ui/react`, `class-variance-authority`, `cn` | Componentes do shadcn/ui (botões, tabelas, diálogos, menus, abas) e seus primitivos |
+| `lucide-react`, `@fontsource-variable/geist` | Ícones e fonte |
 | `react-day-picker` | Calendário do fim da fidelidade na compra |
 | `sonner` | Avisos de sucesso e de erro |
-| `vitest`, `jsdom`, `@testing-library/react`, `@testing-library/user-event`, `@testing-library/jest-dom` | Testes automatizados de funções e de componentes |
-| `eslint`, `typescript-eslint`, `eslint-plugin-react-hooks`, `eslint-plugin-react-refresh` | Lint |
+| `vitest`, `jsdom` | Executar os testes automatizados |
+| `@testing-library/react`, `@testing-library/user-event`, `@testing-library/jest-dom` | Testar componentes como o usuário os usa |
+| `eslint`, `@eslint/js`, `typescript-eslint`, `eslint-plugin-react-hooks`, `eslint-plugin-react-refresh`, `globals` | Lint |
 | `prettier` | Verificação de formatação |
 
 ## Decisões e premissas
@@ -195,7 +201,6 @@ Pontos que o enunciado deixou em aberto ou que merecem registro:
 - **Cache:** o `ETag` está desativado, para que toda consulta responda `200` com corpo, nunca `304`.
 - **Escalação:** o `PUT` substitui a escalação inteira. Jogador vendido ou que passa a `DOENTE` sai da escalação, e o clube só volta a jogar quando escalar de novo.
 - **Erros:** toda recusa devolve `{ "message": "..." }` em texto, sem stack trace, por um filtro global.
-
 - **Frontend, regras:** a tela não recalcula nada que a API calcula (valor de mercado, overall, taxa, multa, comissão, placar, classificação). Só soma valor e taxa para mostrar o custo total da compra.
 - **Frontend, datas:** o fim da fidelidade é digitado no horário de Brasília e enviado com `-03:00`. As datas das respostas são lidas como a API as devolve, sem converter fuso.
 - **Frontend, validação:** os formulários conferem campos obrigatórios, tamanhos e faixas antes de enviar. Regras que dependem do banco (nome ou sigla repetidos, caixa, elenco cheio) ficam com a API, e a tela mostra o `message` dela. A lista de clubes já carregada avisa de nome e sigla repetidos antes do envio, mas a API continua sendo a palavra final.
@@ -216,5 +221,7 @@ Ferramenta: Claude (Anthropic), usado pelo Claude Code no editor.
 - **Compatibilidade de dependências:** usada para resolver problemas de compatibilidade entre as versões das dependências.
 - **Modelagem do banco de dados:** usada na modelagem do schema do banco.
 
-**Responsabilidade:** a IA foi usada como assistente. As decisões de projeto, a revisão do código e a aprovação de cada alteração foram minhas, (Eu sou o guardião da palavra final).
+**Segredos:** a IA não teve acesso a segredos do projeto. O arquivo `.env` real não foi aberto nem enviado a ela; ela viu apenas o `.env.example`, que traz valores de exemplo para desenvolvimento. O `.env` está no `.gitignore` e não vai para o repositório.
+
+**Responsabilidade:** a IA foi usada como assistente. As decisões de projeto, a revisão do código e a aprovação de cada alteração foram minhas (eu sou o guardião da palavra final).
 
