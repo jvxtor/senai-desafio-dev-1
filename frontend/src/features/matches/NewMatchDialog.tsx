@@ -1,4 +1,4 @@
-import { CircleAlert, Loader2, Swords } from 'lucide-react';
+import { CircleAlert, Info, Loader2, Swords } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { toast } from 'sonner';
 import { Modal } from '../../components/common/Modal';
@@ -74,7 +74,7 @@ export function NewMatchDialog({ onClose, onPlayed }: NewMatchDialogProps) {
       onClose={close}
       size="md"
       title="Nova partida"
-      description="Escolha o mandante e o visitante. Os dois clubes precisam ter os 5 titulares escalados."
+      description="Escolha o mandante e o visitante."
     >
       <form noValidate onSubmit={handleSubmit} className="flex flex-col gap-4">
         {apiError && (
@@ -109,6 +109,23 @@ export function NewMatchDialog({ onClose, onPlayed }: NewMatchDialogProps) {
             }}
           />
         </div>
+
+        <section
+          aria-label="Como o resultado é calculado"
+          className="flex flex-col gap-2 rounded-xl border bg-muted/40 px-3 py-3 text-xs text-muted-foreground"
+        >
+          <h3 className="flex items-center gap-2 text-sm font-medium text-foreground">
+            <Info aria-hidden="true" className="size-4" />
+            Como o resultado é calculado
+          </h3>
+          <p>
+            Cada time faz 3 ataques. Pela ordem do elenco, os jogadores de linha vão do 1º (o mais
+            recuado) ao 4º (o mais avançado): o 4º enfrenta o goleiro, o 3º enfrenta o 1º e o 2º
+            enfrenta o 2º do adversário. O atacante usa finalização (ATA), passe (MEI) ou drible
+            (ZAG e LAT), e quem defende usa defesa. É gol só quando o ataque é maior; mal
+            condicionado joga com 15% a menos.
+          </p>
+        </section>
 
         <DialogFooter>
           <Button type="button" variant="outline" disabled={play.isPending} onClick={close}>
