@@ -1,12 +1,13 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { skipToken, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getLineup, setLineup } from '../services/lineup';
 import type { SetLineupInput } from '../services/types';
 import { queryKeys } from './queryKeys';
 
-export function useLineup(clubId: number) {
+/** Sem clube (null), nada é consultado: jogador livre não tem escalação. */
+export function useLineup(clubId: number | null) {
   return useQuery({
-    queryKey: queryKeys.clubs.lineup(clubId),
-    queryFn: () => getLineup(clubId),
+    queryKey: queryKeys.clubs.lineup(clubId ?? 0),
+    queryFn: clubId === null ? skipToken : () => getLineup(clubId),
   });
 }
 
