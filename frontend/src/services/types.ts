@@ -6,13 +6,7 @@ export type Formation = '3-1' | '2-2' | '2-1-1' | '1-2-1';
 export type TransactionType = 'COMPRA' | 'VENDA';
 export type MatchResult = 'MANDANTE' | 'VISITANTE' | 'EMPATE';
 
-export type PlayerSort =
-  | 'name'
-  | 'value_asc'
-  | 'value_desc'
-  | 'age_asc'
-  | 'age_desc'
-  | 'position';
+export type PlayerSort = 'name' | 'value_asc' | 'value_desc' | 'age_asc' | 'age_desc' | 'position';
 export type ClubSort = 'name' | 'net_worth_asc' | 'net_worth_desc';
 
 /* Jogadores */
@@ -77,10 +71,7 @@ export interface CreatePlayerInput {
   potential: number;
 }
 
-export type UpdatePlayerInput = Pick<
-  CreatePlayerInput,
-  'name' | 'position' | 'agility' | 'age'
->;
+export type UpdatePlayerInput = Pick<CreatePlayerInput, 'name' | 'position' | 'agility' | 'age'>;
 
 /* Clubes */
 

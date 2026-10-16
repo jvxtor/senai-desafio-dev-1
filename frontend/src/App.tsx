@@ -37,9 +37,8 @@ function App() {
               Gestão da liga, do mercado à classificação
             </h1>
             <p className="max-w-xl text-base text-balance text-muted-foreground short:max-w-2xl short:text-sm">
-              Cadastre jogadores, monte os clubes e negocie com contrato de
-              fidelidade. Depois, escale os titulares e jogue partidas com
-              placar calculado pelos atributos.
+              Cadastre jogadores, monte os clubes e negocie com contrato de fidelidade. Depois,
+              escale os titulares e jogue partidas com placar calculado pelos atributos.
             </p>
           </div>
 

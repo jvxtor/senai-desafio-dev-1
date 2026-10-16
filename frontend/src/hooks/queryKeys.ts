@@ -1,8 +1,4 @@
-import type {
-  ClubSort,
-  PlayersFilters,
-  TransactionsFilters,
-} from '../services/types';
+import type { ClubSort, PlayersFilters, TransactionsFilters } from '../services/types';
 
 // Chaves em árvore: invalidar um prefixo invalida tudo que está abaixo dele.
 // Ex.: ['clubs'] invalida a lista, o detalhe, o histórico e a escalação dos clubes.

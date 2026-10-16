@@ -42,12 +42,7 @@ export function Pagination({ page, totalPages, onChange }: PaginationProps) {
     <PaginationRoot className="mx-0 w-auto">
       <PaginationContent>
         <PaginationItem>
-          <Button
-            variant="ghost"
-            size="sm"
-            disabled={page <= 1}
-            onClick={() => onChange(page - 1)}
-          >
+          <Button variant="ghost" size="sm" disabled={page <= 1} onClick={() => onChange(page - 1)}>
             <ChevronLeft aria-hidden="true" />
             Anterior
           </Button>

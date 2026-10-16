@@ -15,14 +15,8 @@ function toTransactionParams(filters: TransactionsFilters) {
   });
 }
 
-export async function buyPlayer(
-  playerId: number,
-  input: BuyPlayerInput,
-): Promise<PurchaseResult> {
-  const { data } = await api.post<PurchaseResult>(
-    `/players/${playerId}/buy`,
-    input,
-  );
+export async function buyPlayer(playerId: number, input: BuyPlayerInput): Promise<PurchaseResult> {
+  const { data } = await api.post<PurchaseResult>(`/players/${playerId}/buy`, input);
   return data;
 }
 
@@ -35,10 +29,9 @@ export async function listTransactions(
   clubId: number,
   filters: TransactionsFilters = {},
 ): Promise<TransactionsResult> {
-  const { data } = await api.get<TransactionsResult>(
-    `/clubs/${clubId}/transactions`,
-    { params: toTransactionParams(filters) },
-  );
+  const { data } = await api.get<TransactionsResult>(`/clubs/${clubId}/transactions`, {
+    params: toTransactionParams(filters),
+  });
   return data;
 }
 
@@ -47,9 +40,9 @@ export async function exportTransactions(
   clubId: number,
   filters: TransactionsFilters = {},
 ): Promise<Blob> {
-  const { data } = await api.get<Blob>(
-    `/clubs/${clubId}/transactions/export`,
-    { params: toTransactionParams(filters), responseType: 'blob' },
-  );
+  const { data } = await api.get<Blob>(`/clubs/${clubId}/transactions/export`, {
+    params: toTransactionParams(filters),
+    responseType: 'blob',
+  });
   return data;
 }

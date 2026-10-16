@@ -19,8 +19,7 @@ interface Step {
 const STEPS: Step[] = [
   {
     title: 'Jogadores',
-    description:
-      'Nascem livres e Apto; o valor de mercado vem da condição, agilidade e idade.',
+    description: 'Nascem livres e Apto; o valor de mercado vem da condição, agilidade e idade.',
     icon: Users,
   },
   {
@@ -35,8 +34,7 @@ const STEPS: Step[] = [
   },
   {
     title: 'Venda',
-    description:
-      'Multa antes do fim da fidelidade e comissão sobre o lucro.',
+    description: 'Multa antes do fim da fidelidade e comissão sobre o lucro.',
     icon: ArrowLeftRight,
   },
   {
@@ -46,8 +44,7 @@ const STEPS: Step[] = [
   },
   {
     title: 'Liga',
-    description:
-      'Escale 5 titulares e jogue partidas que entram na classificação.',
+    description: 'Escale 5 titulares e jogue partidas que entram na classificação.',
     icon: Trophy,
   },
 ];

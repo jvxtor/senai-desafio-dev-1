@@ -114,13 +114,7 @@ export function BuyPlayerDialog({ player, onClose }: BuyPlayerDialogProps) {
   );
 }
 
-function PurchaseSummary({
-  result,
-  onClose,
-}: {
-  result: PurchaseResult;
-  onClose: () => void;
-}) {
+function PurchaseSummary({ result, onClose }: { result: PurchaseResult; onClose: () => void }) {
   const rows: [string, string][] = [
     ['Valor', formatMoney(result.value)],
     ['Taxa', formatMoney(result.fee)],

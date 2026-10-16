@@ -35,8 +35,7 @@ function Panel({ children }: { children: ReactNode }) {
 
 // Os três estados de toda tela de lista: carregando, erro e vazio.
 export function DataState(props: DataStateProps) {
-  const { isPending, error, isEmpty, onRetry, loadingLabel, empty, children } =
-    props;
+  const { isPending, error, isEmpty, onRetry, loadingLabel, empty, children } = props;
 
   if (isPending) {
     return (

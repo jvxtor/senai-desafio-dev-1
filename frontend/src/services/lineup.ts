@@ -6,10 +6,7 @@ export async function getLineup(clubId: number): Promise<Lineup> {
   return data;
 }
 
-export async function setLineup(
-  clubId: number,
-  input: SetLineupInput,
-): Promise<Lineup> {
+export async function setLineup(clubId: number, input: SetLineupInput): Promise<Lineup> {
   const { data } = await api.put<Lineup>(`/clubs/${clubId}/lineup`, input);
   return data;
 }

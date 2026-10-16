@@ -1,10 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import {
-  getMatch,
-  listMatches,
-  listStandings,
-  playMatch,
-} from '../services/matches';
+import { getMatch, listMatches, listStandings, playMatch } from '../services/matches';
 import type { PlayMatchInput } from '../services/types';
 import { invalidateMatchData } from './invalidation';
 import { queryKeys } from './queryKeys';

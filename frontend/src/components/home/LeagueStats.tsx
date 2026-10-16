@@ -27,9 +27,7 @@ function Stat({ icon, children }: { icon: ReactNode; children: ReactNode }) {
 
 function Count({ value }: { value?: number }) {
   return (
-    <strong className="font-semibold text-foreground tabular-nums">
-      {value ?? UNAVAILABLE}
-    </strong>
+    <strong className="font-semibold text-foreground tabular-nums">{value ?? UNAVAILABLE}</strong>
   );
 }
 

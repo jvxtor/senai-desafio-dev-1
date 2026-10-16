@@ -1,8 +1,4 @@
-import type {
-  CreatePlayerInput,
-  Position,
-  UpdatePlayerInput,
-} from '../../services/types';
+import type { CreatePlayerInput, Position, UpdatePlayerInput } from '../../services/types';
 
 /** O que está nos campos do formulário, sempre como texto. */
 export interface PlayerFormValues {

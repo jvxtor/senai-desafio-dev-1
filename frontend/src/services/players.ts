@@ -9,9 +9,7 @@ import type {
   UpdatePlayerInput,
 } from './types';
 
-export async function listPlayers(
-  filters: PlayersFilters = {},
-): Promise<PlayersPage> {
+export async function listPlayers(filters: PlayersFilters = {}): Promise<PlayersPage> {
   const { data } = await api.get<PlayersPage>('/players', {
     params: cleanParams({ ...filters }),
   });
@@ -28,18 +26,12 @@ export async function createPlayer(input: CreatePlayerInput): Promise<Player> {
   return data;
 }
 
-export async function updatePlayer(
-  id: number,
-  input: UpdatePlayerInput,
-): Promise<Player> {
+export async function updatePlayer(id: number, input: UpdatePlayerInput): Promise<Player> {
   const { data } = await api.put<Player>(`/players/${id}`, input);
   return data;
 }
 
-export async function changePlayerCondition(
-  id: number,
-  condition: Condition,
-): Promise<Player> {
+export async function changePlayerCondition(id: number, condition: Condition): Promise<Player> {
   const { data } = await api.patch<Player>(`/players/${id}/condition`, {
     condition,
   });
