@@ -24,7 +24,8 @@ import { formatMoney } from '../../lib/format';
 import { cn } from '../../lib/utils';
 import type { Player } from '../../services/types';
 import { AttributeBars, MAX_ATTRIBUTE } from './AttributeBars';
-import { CONDITION_LABELS, CONDITION_STYLE, initialsOf, POSITION_LABELS } from './labels';
+import { CONDITION_LABELS, CONDITION_STYLE, POSITION_LABELS, positionTone } from './labels';
+import { PlayerAvatar } from './PlayerAvatar';
 
 interface PlayerDetailsSheetProps {
   player: Player;
@@ -60,12 +61,7 @@ export function PlayerDetailsSheet(props: PlayerDetailsSheetProps) {
     >
       <SheetContent className="w-full gap-0 sm:max-w-sm">
         <SheetHeader className="flex-row items-center gap-3 p-4 pr-12">
-          <span
-            aria-hidden="true"
-            className="grid size-10 shrink-0 place-items-center rounded-full bg-muted text-sm font-medium"
-          >
-            {initialsOf(player.name)}
-          </span>
+          <PlayerAvatar name={player.name} position={player.position} size="xl" />
           <div className="flex min-w-0 flex-col gap-1.5">
             <SheetTitle className="truncate text-lg">{player.name}</SheetTitle>
             <SheetDescription className="sr-only">
@@ -74,7 +70,7 @@ export function PlayerDetailsSheet(props: PlayerDetailsSheetProps) {
             <div className="flex flex-wrap items-center gap-1.5">
               <Badge
                 variant="secondary"
-                className="rounded-md"
+                className={cn('rounded-md', positionTone(player.position))}
                 title={POSITION_LABELS[player.position]}
               >
                 {player.position}

@@ -3,8 +3,9 @@ import { DataState } from '../../components/common/DataState';
 import { Badge } from '../../components/ui/badge';
 import { Button } from '../../components/ui/button';
 import type { Lineup, Player } from '../../services/types';
-import { CONDITION_LABELS, CONDITION_STYLE, initialsOf } from '../players/labels';
+import { CONDITION_LABELS, CONDITION_STYLE } from '../players/labels';
 import { SECTOR_LABELS, SECTORS_TOP_DOWN, countInSector, sectorOf, type Sector } from './lineup';
+import { PlayerAvatar } from '../players/PlayerAvatar';
 
 interface LineupPanelProps {
   lineup: Lineup | undefined;
@@ -19,12 +20,7 @@ const LINEUP_SIZE = 5;
 function StarterCard({ player }: { player: Player }) {
   return (
     <div className="flex min-w-44 items-center gap-2.5 rounded-xl border bg-background p-2.5">
-      <span
-        aria-hidden="true"
-        className="grid size-8 shrink-0 place-items-center rounded-full bg-muted text-xs font-medium"
-      >
-        {initialsOf(player.name)}
-      </span>
+      <PlayerAvatar name={player.name} position={player.position} size="md" />
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-medium">{player.name}</p>
         <p className="text-xs text-muted-foreground">

@@ -12,9 +12,10 @@ import { getErrorMessage } from '../../lib/errors';
 import { formatDateAndTime, formatMoney } from '../../lib/format';
 import { cn } from '../../lib/utils';
 import type { SaleResult, SquadPlayer } from '../../services/types';
-import { initialsOf, POSITION_LABELS } from '../players/labels';
+import { POSITION_LABELS } from '../players/labels';
 import { MAX_PENALTY } from './labels';
 import { SaleSummaryDialog } from './SaleSummaryDialog';
+import { PlayerAvatar } from '../players/PlayerAvatar';
 
 interface SellPlayerDialogProps {
   player: SquadPlayer;
@@ -95,12 +96,7 @@ export function SellPlayerDialog(props: SellPlayerDialogProps) {
         )}
 
         <div className="flex items-center gap-3 rounded-xl border bg-muted/40 p-3">
-          <span
-            aria-hidden="true"
-            className="grid size-9 shrink-0 place-items-center rounded-full bg-muted text-sm font-medium"
-          >
-            {initialsOf(player.name)}
-          </span>
+          <PlayerAvatar name={player.name} position={player.position} size="lg" />
           <div className="min-w-0 flex-1">
             <p className="truncate font-medium">{player.name}</p>
             <p className="text-xs text-muted-foreground">

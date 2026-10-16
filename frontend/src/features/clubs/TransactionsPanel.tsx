@@ -24,12 +24,13 @@ import {
   TableRow,
 } from '../../components/ui/table';
 import { useExportTransactions, useTransactions } from '../../hooks/market';
+import { usePlayerPositions } from '../../hooks/players';
 import { saveBlob } from '../../lib/download';
 import { getErrorMessage } from '../../lib/errors';
 import { formatDate, formatMoney, formatSignedMoney, formatTime } from '../../lib/format';
 import { cn } from '../../lib/utils';
 import type { TransactionType, TransactionsFilters } from '../../services/types';
-import { avatarTone, initialsOf } from '../players/labels';
+import { PlayerAvatar } from '../players/PlayerAvatar';
 
 interface TransactionsPanelProps {
   clubId: number;
@@ -131,6 +132,8 @@ export function TransactionsPanel({ clubId, acronym }: TransactionsPanelProps) {
   const exporter = useExportTransactions();
 
   const list = transactions.data?.data ?? [];
+  // A cor do avatar é a da posição de hoje do jogador, que o histórico não traz.
+  const positions = usePlayerPositions([...new Set(list.map((item) => item.player_id))]);
   const summary = transactions.data?.summary;
 
   const playerOptions = [
@@ -279,15 +282,10 @@ export function TransactionsPanel({ clubId, acronym }: TransactionsPanelProps) {
                   </TableCell>
                   <TableCell className={CELL}>
                     <div className="flex items-center gap-3">
-                      <span
-                        aria-hidden="true"
-                        className={cn(
-                          'grid size-8 shrink-0 place-items-center rounded-full text-xs font-medium',
-                          avatarTone(item.player_name),
-                        )}
-                      >
-                        {initialsOf(item.player_name)}
-                      </span>
+                      <PlayerAvatar
+                        name={item.player_name}
+                        position={positions.get(item.player_id)}
+                      />
                       <span className="font-medium">{item.player_name}</span>
                     </div>
                   </TableCell>

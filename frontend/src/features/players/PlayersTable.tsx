@@ -10,8 +10,9 @@ import {
 import { formatMoney } from '../../lib/format';
 import { cn } from '../../lib/utils';
 import type { Club, Player } from '../../services/types';
-import { CONDITION_LABELS, CONDITION_STYLE, initialsOf, POSITION_LABELS } from './labels';
+import { CONDITION_LABELS, CONDITION_STYLE, POSITION_LABELS, positionTone } from './labels';
 import { PlayerActionsMenu } from './PlayerActionsMenu';
+import { PlayerAvatar } from './PlayerAvatar';
 
 interface PlayersTableProps {
   players: Player[];
@@ -131,12 +132,7 @@ export function PlayersTable(props: PlayersTableProps) {
             >
               <TableCell className={CELL}>
                 <div className="flex items-center gap-2.5">
-                  <span
-                    aria-hidden="true"
-                    className="grid size-7 shrink-0 place-items-center rounded-full bg-muted text-[0.7rem] font-medium"
-                  >
-                    {initialsOf(player.name)}
-                  </span>
+                  <PlayerAvatar name={player.name} position={player.position} size="sm" />
                   <button
                     type="button"
                     className="rounded-sm text-left font-medium outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50"
@@ -149,7 +145,7 @@ export function PlayersTable(props: PlayersTableProps) {
               <TableCell className={CELL}>
                 <Badge
                   variant="secondary"
-                  className="rounded-md"
+                  className={cn('rounded-md', positionTone(player.position))}
                   title={POSITION_LABELS[player.position]}
                 >
                   {player.position}

@@ -18,9 +18,9 @@ import {
   CONDITION_DESCRIPTIONS,
   CONDITION_LABELS,
   CONDITION_STYLE,
-  initialsOf,
   POSITION_LABELS,
 } from './labels';
+import { PlayerAvatar } from './PlayerAvatar';
 
 interface ConditionDialogProps {
   player: Player;
@@ -69,12 +69,7 @@ export function ConditionDialog({ player, clubName, onClose }: ConditionDialogPr
     >
       <form noValidate onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div className="flex items-center gap-3 rounded-xl border bg-muted/40 p-3">
-          <span
-            aria-hidden="true"
-            className="grid size-9 shrink-0 place-items-center rounded-full bg-muted text-sm font-medium"
-          >
-            {initialsOf(player.name)}
-          </span>
+          <PlayerAvatar name={player.name} position={player.position} size="lg" />
           <div className="min-w-0 flex-1">
             <p className="truncate font-medium">{player.name}</p>
             <p className="text-xs text-muted-foreground">
