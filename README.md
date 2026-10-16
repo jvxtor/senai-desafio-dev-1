@@ -99,7 +99,7 @@ Além da stack obrigatória (NestJS, React com Vite, PostgreSQL e Git):
 | `class-validator`, `class-transformer` | Validar o corpo e os query params por DTO, com mensagens de erro centralizadas |
 | `decimal.js` | Cálculos em moeda sem erro de ponto flutuante, com arredondamento do meio para longe do zero |
 | `reflect-metadata`, `rxjs` | Exigidas pelo NestJS |
-| `vitest`, `@vitest/coverage-v8`, `supertest`, `@nestjs/testing` | Testes automatizados |
+| `vitest`, `@vitest/coverage-v8`, `@nestjs/testing` | Testes automatizados |
 | `oxlint` | Lint |
 | `prettier` | Verificação de formatação |
 | `dotenv` | Ler o `.env` da raiz no `prisma.config.ts` |
