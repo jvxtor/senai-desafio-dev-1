@@ -16,8 +16,8 @@ function NotFound() {
           Página não encontrada
         </h1>
         <p className="max-w-md text-muted-foreground">
-          O endereço que você tentou abrir não existe ou foi movido. Confira o link ou volte para
-          a página inicial.
+          O endereço que você tentou abrir não existe ou foi movido. Confira o link ou volte para a
+          página inicial.
         </p>
         <div className="mt-2 flex flex-wrap justify-center gap-3">
           <Button variant="outline" onClick={() => window.history.back()}>
