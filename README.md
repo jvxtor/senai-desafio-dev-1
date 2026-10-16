@@ -225,3 +225,5 @@ Ferramenta: Claude (Anthropic), usado pelo Claude Code no editor.
 
 **Responsabilidade:** a IA foi usada como assistente. As decisões de projeto, a revisão do código e a aprovação de cada alteração foram minhas (eu sou o guardião da palavra final).
 
+By:  João Victor da Silva
+

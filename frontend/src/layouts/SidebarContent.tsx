@@ -1,6 +1,7 @@
-import { Clock, ListOrdered, Shield, Swords, Users, type LucideIcon } from 'lucide-react';
+import { ListOrdered, Shield, Swords, Users, type LucideIcon } from 'lucide-react';
 import { Link, NavLink } from 'react-router';
 import { ClubsNav } from './ClubsNav';
+import { SidebarSummary } from './SidebarSummary';
 import type { NavCounts } from './useNavCounts';
 
 interface NavItem {
@@ -96,10 +97,7 @@ export function SidebarContent({ counts }: { counts: NavCounts }) {
         ))}
       </nav>
       <ClubsNav />
-      <p className="mt-auto flex shrink-0 items-center gap-2 px-2.5 text-xs text-muted-foreground">
-        <Clock aria-hidden="true" className="size-3.5" />
-        Horário de Brasília (UTC−3)
-      </p>
+      <SidebarSummary counts={counts} />
     </>
   );
 }
