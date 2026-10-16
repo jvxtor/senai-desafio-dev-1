@@ -7,7 +7,7 @@ import { BuyPlayerDialog } from '../features/players/BuyPlayerDialog';
 import { ConditionDialog } from '../features/players/ConditionDialog';
 import { DeletePlayerDialog } from '../features/players/DeletePlayerDialog';
 import { PlayerFormDialog } from '../features/players/PlayerFormDialog';
-import { PlayersFilters } from '../features/players/PlayersFilters';
+import { PlayersFilterBar } from '../features/players/PlayersFilterBar';
 import { PlayersTable } from '../features/players/PlayersTable';
 import { PlayersToolbar } from '../features/players/PlayersToolbar';
 import { usePlayersFilters } from '../features/players/usePlayersFilters';
@@ -16,9 +16,7 @@ import { usePlayers } from '../hooks/players';
 import type { Player } from '../services/types';
 
 type DialogState =
-  | { type: 'create' }
-  | { type: 'edit' | 'condition' | 'delete' | 'buy'; player: Player }
-  | null;
+  { type: 'create' } | { type: 'edit' | 'condition' | 'delete' | 'buy'; player: Player } | null;
 
 function PlayersPage() {
   const filters = usePlayersFilters();
@@ -42,7 +40,7 @@ function PlayersPage() {
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-5 lg:h-full lg:min-h-[34rem]">
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-5 short:gap-3 lg:h-full">
       <header className="flex shrink-0 flex-wrap items-start justify-between gap-4">
         <div className="flex items-start gap-4">
           <span
@@ -53,7 +51,7 @@ function PlayersPage() {
           </span>
           <div>
             <h1 className="text-2xl font-semibold tracking-tight">Jogadores</h1>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="mt-1 text-sm text-muted-foreground short:hidden">
               Cadastre jogadores, acompanhe os indicadores e compre os que estão livres.
             </p>
           </div>
@@ -64,20 +62,21 @@ function PlayersPage() {
         </Button>
       </header>
 
-      <PlayersFilters
+      <PlayersFilterBar
         draft={filters.draft}
-        searchInput={filters.searchInput}
+        applied={filters.filters}
         errors={filters.errors}
+        searchInput={filters.searchInput}
         clubs={clubs.data ?? []}
-        isFiltering={filters.isFiltering}
+        hasFilters={filters.hasBarFilters}
         onSearchChange={filters.setSearchInput}
         onChange={filters.update}
-        onReset={filters.reset}
+        onClear={filters.clearBarFilters}
       />
 
       <section
         aria-label="Lista de jogadores"
-        className="flex min-h-0 flex-col rounded-xl border bg-background lg:flex-1"
+        className="flex min-h-0 flex-col rounded-xl border bg-background lg:min-h-56 lg:flex-1"
       >
         <PlayersToolbar
           scope={filters.draft.scope}
@@ -147,7 +146,7 @@ function PlayersPage() {
         </DataState>
       </section>
 
-      <p className="shrink-0 text-xs text-muted-foreground">
+      <p className="shrink-0 text-xs text-muted-foreground short:hidden">
         Overall e valor de mercado são calculados a cada consulta. A busca ignora maiúsculas,
         minúsculas e acentos.
       </p>
@@ -157,11 +156,7 @@ function PlayersPage() {
       {dialog?.type === 'condition' && <ConditionDialog player={dialog.player} onClose={close} />}
       {dialog?.type === 'buy' && <BuyPlayerDialog player={dialog.player} onClose={close} />}
       {dialog?.type === 'delete' && (
-        <DeletePlayerDialog
-          player={dialog.player}
-          onClose={close}
-          onDeleted={handleDeleted}
-        />
+        <DeletePlayerDialog player={dialog.player} onClose={close} onDeleted={handleDeleted} />
       )}
     </div>
   );
