@@ -21,10 +21,19 @@ Aplicação com backend (NestJS + Prisma), frontend (React + Vite) e banco Postg
 2. Suba tudo (banco, API e frontend):
 
    ```bash
-   docker compose up
+   docker compose up -d
    ```
 
-   Na primeira vez, o backend instala as dependências, gera o client do Prisma e aplica as migrations do banco sozinho, então demora um pouco mais.
+   Na primeira vez, o backend instala as dependências, gera o client do Prisma e aplica a migration do banco sozinho, então demora um pouco mais (vai da certo).
+
+   Caso deseje polular o banco de dados, aguarde a migration ser aplicada.
+
+3. Popular banco de dados (opcional):
+
+   ```bash
+   docker compose exec backend npm run db:seed
+   ```
+
 
 ## Endereços
 
@@ -33,7 +42,6 @@ Aplicação com backend (NestJS + Prisma), frontend (React + Vite) e banco Postg
 | API (origem) | http://localhost:3000 |
 | Frontend | http://localhost:5173 |
 | Documentação interativa (Swagger) | http://localhost:3000/docs |
-| Banco | localhost:5432 |
 
 Os endpoints da API ficam sob o prefixo `/api/v1` (por exemplo, `http://localhost:3000/api/v1/players`). A API aceita chamadas só da origem do frontend (`http://localhost:5173`), definida por `CORS_ORIGIN`.
 
@@ -62,8 +70,7 @@ O `migrate reset` já roda o seed (veja abaixo) ao terminar. Para criar o banco 
 O banco nasce vazio de propósito. Para testar a interface e a API sem cadastrar tudo à mão, rode o seed (`backend/prisma/seed`):
 
 ```bash
-docker compose exec backend npm run db:seed
-# ou, fora do Docker, dentro de backend/:
+# fora do Docker, dentro de backend/:
 npm run db:seed
 ```
 
