@@ -56,3 +56,18 @@ export function initialsOf(name: string): string {
   const last = words.length > 1 ? (words[words.length - 1][0] ?? '') : '';
   return `${first}${last}`.toUpperCase();
 }
+
+const AVATAR_TONES = [
+  'bg-pink-100 text-pink-700',
+  'bg-cyan-100 text-cyan-700',
+  'bg-violet-100 text-violet-700',
+  'bg-emerald-100 text-emerald-700',
+  'bg-slate-200 text-slate-700',
+];
+
+/** Uma cor de avatar por nome: o mesmo jogador tem sempre a mesma cor. */
+export function avatarTone(name: string): string {
+  let hash = 0;
+  for (const char of name) hash = (hash * 31 + char.charCodeAt(0)) % 997;
+  return AVATAR_TONES[hash % AVATAR_TONES.length];
+}

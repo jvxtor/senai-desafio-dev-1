@@ -4,7 +4,7 @@ import { Modal } from '../../components/common/Modal';
 import { Badge } from '../../components/ui/badge';
 import { Button } from '../../components/ui/button';
 import { DialogFooter } from '../../components/ui/dialog';
-import { formatMoney } from '../../lib/format';
+import { formatMoney, formatSignedMoney } from '../../lib/format';
 import { cn } from '../../lib/utils';
 import type { SaleResult } from '../../services/types';
 import { MAX_PENALTY } from './labels';
@@ -17,8 +17,6 @@ interface SaleSummaryDialogProps {
   onClose: () => void;
   onViewHistory: () => void;
 }
-
-const signed = (value: number) => `${value > 0 ? '+' : ''}${formatMoney(value)}`;
 
 const CONTRACT_STYLE = {
   RESCINDIDO: 'border-amber-200 bg-amber-50 text-amber-700',
@@ -66,7 +64,7 @@ export function SaleSummaryDialog(props: SaleSummaryDialogProps) {
               (result.profit ?? 0) < 0 && 'text-destructive',
             )}
           >
-            {signed(result.profit ?? 0)}
+            {formatSignedMoney(result.profit ?? 0)}
           </span>
         </FactRow>
         <FactRow
@@ -80,7 +78,7 @@ export function SaleSummaryDialog(props: SaleSummaryDialogProps) {
           {formatMoney(result.fee)}
         </FactRow>
         <FactRow strong label="Crédito no caixa" hint="Valor de venda – multa – comissão">
-          {signed(result.cash_change)}
+          {formatSignedMoney(result.cash_change)}
         </FactRow>
         <FactRow label="Contrato">
           <Badge variant="outline" className={CONTRACT_STYLE[result.contract_status]}>

@@ -10,6 +10,8 @@ interface FilterSelectProps {
   options: SelectOption[];
   /** Valor escolhido. Texto vazio quer dizer "sem filtro". */
   value: string;
+  /** Texto do botão sem escolha, no lugar do nome do filtro (ex.: "Jogador: todos"). */
+  emptyText?: string;
   /** Texto da opção que remove o filtro, como "Todas as posições". */
   clearLabel: string;
   onValueChange: (value: string) => void;
@@ -23,7 +25,7 @@ export function FilterSelect(props: FilterSelectProps) {
   const { label, icon: Icon, options, value, clearLabel, disabled, disabledReason } = props;
   const items: SelectOption[] = [{ value: '', label: clearLabel }, ...options];
   const chosen = options.find((option) => option.value === value);
-  const text = chosen ? `${label}: ${chosen.label}` : label;
+  const text = chosen ? `${label}: ${chosen.label}` : (props.emptyText ?? label);
 
   return (
     <Select

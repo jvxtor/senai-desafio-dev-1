@@ -39,3 +39,15 @@ export function formatDateAndTime(value: string): string {
   const [, year, month, day, hour, minute] = match;
   return `${day}/${month}/${year}, ${hour}:${minute}`;
 }
+
+/** Só a hora da API ("2026-11-02T10:15:00-03:00") no formato "10:15", sem converter fuso. */
+export function formatTime(value: string): string {
+  const match = API_DATE_TIME.exec(value);
+  return match ? `${match[4]}:${match[5]}` : value;
+}
+
+/** Dinheiro com sinal: "+7,80" e "−4,80" (com o sinal de menos de verdade); o zero fica sem sinal. */
+export function formatSignedMoney(value: number): string {
+  if (value === 0) return formatMoney(0);
+  return `${value > 0 ? '+' : '−'}${formatMoney(Math.abs(value))}`;
+}
