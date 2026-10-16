@@ -1,9 +1,4 @@
-import type {
-  Condition,
-  PlayerSort,
-  PlayersFilters,
-  Position,
-} from '../../services/types';
+import type { Condition, PlayerSort, PlayersFilters, Position } from '../../services/types';
 
 export const PAGE_SIZE = 10;
 
@@ -22,6 +17,13 @@ export interface FilterDraft {
   maxValue: string;
   sort: PlayerSort;
 }
+
+/**
+ * Endereço da lista de jogadores já mostrando só os livres. O parâmetro vale só na abertura da
+ * tela: ela o lê para escolher a aba e o tira do endereço.
+ */
+export const SHOW_PARAM = 'mostrar';
+export const FREE_PLAYERS_URL = `/jogadores?${SHOW_PARAM}=livres`;
 
 export const EMPTY_DRAFT: FilterDraft = {
   position: '',
@@ -68,8 +70,7 @@ function parseRange(
   const max = rawMax.trim() === '' ? undefined : parse(rawMax.trim());
   const minIsInvalid = rawMin.trim() !== '' && min === undefined;
   const maxIsInvalid = rawMax.trim() !== '' && max === undefined;
-  const outside = (n?: number) =>
-    n !== undefined && (n < limits.min || n > limits.max);
+  const outside = (n?: number) => n !== undefined && (n < limits.min || n > limits.max);
 
   if (minIsInvalid || maxIsInvalid || outside(min) || outside(max)) {
     return { error: message };
@@ -93,11 +94,7 @@ const parseDecimal = (raw: string) => {
  * A API recusa (400) busca de 1 letra, faixas contraditórias e `free=true` com `club_id`,
  * então esses casos nunca saem da tela: o campo errado mostra a mensagem e não é enviado.
  */
-export function buildPlayersFilters(
-  draft: FilterDraft,
-  search: string,
-  page: number,
-): Built {
+export function buildPlayersFilters(draft: FilterDraft, search: string, page: number): Built {
   const errors: FilterErrors = {};
   const text = search.trim();
 
@@ -177,8 +174,5 @@ export function hasBarFilters(draft: FilterDraft, search: string): boolean {
 
 /** Há algum filtro além da ordenação? Define a mensagem de lista vazia. */
 export function hasActiveFilters(draft: FilterDraft, search: string): boolean {
-  return (
-    search.trim() !== '' ||
-    FILTER_KEYS.some((key) => draft[key] !== EMPTY_DRAFT[key])
-  );
+  return search.trim() !== '' || FILTER_KEYS.some((key) => draft[key] !== EMPTY_DRAFT[key]);
 }

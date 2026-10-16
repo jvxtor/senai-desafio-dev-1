@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router';
 import { useDebouncedValue } from '../../hooks/useDebouncedValue';
 import {
   buildPlayersFilters,
@@ -6,6 +7,7 @@ import {
   hasActiveFilters,
   hasBarFilters,
   PANEL_FILTERS_RESET,
+  SHOW_PARAM,
   type FilterDraft,
 } from './filters';
 
@@ -18,10 +20,20 @@ interface PageState {
 }
 
 export function usePlayersFilters() {
-  const [draft, setDraft] = useState<FilterDraft>(EMPTY_DRAFT);
+  const [params, setParams] = useSearchParams();
+  // Vindo da tela de um clube (?mostrar=livres), a lista já abre só com os jogadores livres.
+  const [draft, setDraft] = useState<FilterDraft>(() => ({
+    ...EMPTY_DRAFT,
+    scope: params.get(SHOW_PARAM) === 'livres' ? 'free' : 'all',
+  }));
   const [searchInput, setSearchInput] = useState('');
   const [pageState, setPageState] = useState<PageState>({ key: '', value: 1 });
   const search = useDebouncedValue(searchInput, SEARCH_DELAY_MS);
+
+  // O parâmetro já foi lido: sai do endereço, para recarregar a página não refazer o filtro.
+  useEffect(() => {
+    if (params.has(SHOW_PARAM)) setParams({}, { replace: true });
+  }, [params, setParams]);
 
   const { filters, errors, filtersKey } = useMemo(() => {
     const first = buildPlayersFilters(draft, search, 1);

@@ -14,8 +14,6 @@ import type { Player, PurchaseResult } from '../../services/types';
 
 interface BuyPlayerDialogProps {
   player: Player;
-  /** Compra a partir da tela de um clube: o clube já vem escolhido e não muda. */
-  clubId?: number;
   onClose: () => void;
 }
 
@@ -26,11 +24,11 @@ interface Errors {
 
 const DATE_TIME = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/;
 
-export function BuyPlayerDialog({ player, clubId: fixedClubId, onClose }: BuyPlayerDialogProps) {
+export function BuyPlayerDialog({ player, onClose }: BuyPlayerDialogProps) {
   const clubs = useClubs();
   const buy = useBuyPlayer();
 
-  const [clubId, setClubId] = useState(fixedClubId === undefined ? '' : String(fixedClubId));
+  const [clubId, setClubId] = useState('');
   const [loyalty, setLoyalty] = useState('');
   const [errors, setErrors] = useState<Errors>({});
   const [result, setResult] = useState<PurchaseResult | null>(null);
@@ -76,7 +74,6 @@ export function BuyPlayerDialog({ player, clubId: fixedClubId, onClose }: BuyPla
       <form noValidate onSubmit={handleSubmit} className="flex flex-col gap-4">
         <SelectField
           label="Clube comprador"
-          disabled={fixedClubId !== undefined}
           placeholder={clubs.isPending ? 'Carregando clubes…' : 'Escolha o clube'}
           options={clubOptions}
           value={clubId}
