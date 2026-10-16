@@ -132,7 +132,7 @@ function ClubsPage() {
         </DataState>
       </section>
 
-      {creating && <ClubFormDialog onClose={() => setCreating(false)} />}
+      {creating && <ClubFormDialog clubs={all} onClose={() => setCreating(false)} />}
     </div>
   );
 }
