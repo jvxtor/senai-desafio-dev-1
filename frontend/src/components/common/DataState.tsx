@@ -17,11 +17,19 @@ interface DataStateProps {
 
 const SKELETON_ROWS = 6;
 
+// Os estados sem tabela rolam dentro do quadro, como a tabela: o conteúdo fica centralizado
+// quando cabe e passa a rolar quando o quadro é mais baixo que ele.
+function Scroller({ children }: { children: ReactNode }) {
+  return <div className="min-h-0 flex-1 overflow-y-auto">{children}</div>;
+}
+
 function Panel({ children }: { children: ReactNode }) {
   return (
-    <div className="flex min-h-64 flex-col items-center justify-center gap-3 px-6 py-12 text-center">
-      {children}
-    </div>
+    <Scroller>
+      <div className="flex min-h-full flex-col items-center justify-center gap-3 px-6 py-8 text-center">
+        {children}
+      </div>
+    </Scroller>
   );
 }
 
@@ -32,14 +40,16 @@ export function DataState(props: DataStateProps) {
 
   if (isPending) {
     return (
-      <div className="flex flex-col gap-3 p-4">
-        <p role="status" className="text-sm text-muted-foreground">
-          {loadingLabel}
-        </p>
-        {Array.from({ length: SKELETON_ROWS }, (_, index) => (
-          <Skeleton key={index} className="h-10 w-full" />
-        ))}
-      </div>
+      <Scroller>
+        <div className="flex flex-col gap-3 p-4">
+          <p role="status" className="text-sm text-muted-foreground">
+            {loadingLabel}
+          </p>
+          {Array.from({ length: SKELETON_ROWS }, (_, index) => (
+            <Skeleton key={index} className="h-10 w-full shrink-0" />
+          ))}
+        </div>
+      </Scroller>
     );
   }
 
