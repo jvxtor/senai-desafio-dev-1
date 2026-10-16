@@ -16,6 +16,8 @@ interface FilterSelectProps {
   clearLabel: string;
   onValueChange: (value: string) => void;
   disabled?: boolean;
+  /** Estilo extra do botão, para encaixar o filtro em outras telas. */
+  className?: string;
   /** Explica por que o filtro está desativado, ao passar o mouse. */
   disabledReason?: string;
 }
@@ -23,6 +25,7 @@ interface FilterSelectProps {
 // Um filtro em forma de botão: o valor escolhido aparece dentro dele, sem precisar abrir a lista.
 export function FilterSelect(props: FilterSelectProps) {
   const { label, icon: Icon, options, value, clearLabel, disabled, disabledReason } = props;
+  const { className } = props;
   const items: SelectOption[] = [{ value: '', label: clearLabel }, ...options];
   const chosen = options.find((option) => option.value === value);
   const text = chosen ? `${label}: ${chosen.label}` : (props.emptyText ?? label);
@@ -40,6 +43,7 @@ export function FilterSelect(props: FilterSelectProps) {
         className={cn(
           'w-fit gap-2 px-3 data-[size=default]:h-9',
           !chosen && 'text-muted-foreground',
+          className,
         )}
       >
         <Icon aria-hidden="true" className="size-4 shrink-0" />

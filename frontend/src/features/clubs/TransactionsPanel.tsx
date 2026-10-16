@@ -36,9 +36,9 @@ interface TransactionsPanelProps {
   acronym: string;
 }
 
-const TYPES: { value: TransactionType; label: string }[] = [
-  { value: 'COMPRA', label: 'Compra' },
-  { value: 'VENDA', label: 'Venda' },
+const TYPES: { value: TransactionType; label: string; icon: LucideIcon }[] = [
+  { value: 'COMPRA', label: 'Compra', icon: ShoppingCart },
+  { value: 'VENDA', label: 'Venda', icon: HandCoins },
 ];
 
 const HEADERS = [
@@ -59,14 +59,15 @@ const CELL = 'px-3 py-3';
 const sign = (value: number) =>
   value > 0 ? 'text-emerald-700' : value < 0 ? 'text-destructive' : '';
 
-// Caixa de seleção em forma de botão: ligada, fica azul; o texto diz o que ela filtra.
+// Botão de marcar/desmarcar um tipo: pílula com o mesmo ícone da tabela; ligado, fica azulado.
 function TypeChip(props: {
   label: string;
+  icon: LucideIcon;
   checked: boolean;
   locked: boolean;
   onToggle: () => void;
 }) {
-  const { label, checked, locked, onToggle } = props;
+  const { label, icon: Icon, checked, locked, onToggle } = props;
 
   return (
     <button
@@ -79,23 +80,16 @@ function TypeChip(props: {
         if (!locked) onToggle();
       }}
       className={cn(
-        'inline-flex h-9 items-center gap-2 rounded-lg border px-3 text-sm font-medium outline-none focus-visible:ring-3 focus-visible:ring-ring/50',
+        'inline-flex h-8 items-center gap-1.5 rounded-full border px-3 text-sm font-medium transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50',
         checked
-          ? 'border-primary bg-primary/5 text-primary'
-          : 'bg-background text-muted-foreground hover:text-foreground',
-        locked && 'cursor-not-allowed',
+          ? 'border-primary/30 bg-primary/10 text-primary'
+          : 'bg-background text-muted-foreground hover:bg-muted/60 hover:text-foreground',
+        locked ? 'cursor-not-allowed' : 'cursor-pointer',
       )}
     >
-      <span
-        aria-hidden="true"
-        className={cn(
-          'grid size-4 place-items-center rounded-[4px] border',
-          checked ? 'border-primary bg-primary text-primary-foreground' : 'border-input',
-        )}
-      >
-        {checked && <Check className="size-3" strokeWidth={3} />}
-      </span>
+      <Icon aria-hidden="true" className="size-3.5" />
       {label}
+      {checked && <Check aria-hidden="true" className="size-3.5" strokeWidth={3} />}
     </button>
   );
 }
@@ -147,6 +141,13 @@ export function TransactionsPanel({ clubId, acronym }: TransactionsPanelProps) {
     .map(([id, name]) => ({ value: String(id), label: name }))
     .sort((a, b) => a.label.localeCompare(b.label, 'pt-BR'));
 
+  const isFiltered = types.length < TYPES.length || playerId !== '';
+
+  function clearFilters() {
+    setTypes(TYPES.map((type) => type.value));
+    setPlayerId('');
+  }
+
   function toggleType(type: TransactionType) {
     setTypes((current) =>
       current.includes(type) ? current.filter((item) => item !== type) : [...current, type],
@@ -178,18 +179,21 @@ export function TransactionsPanel({ clubId, acronym }: TransactionsPanelProps) {
         </Button>
       </div>
 
-      <div className="flex shrink-0 flex-wrap items-center gap-2 px-4 py-4">
-        <span className="text-sm text-muted-foreground">Tipo</span>
-        {TYPES.map((type) => (
-          <TypeChip
-            key={type.value}
-            label={type.label}
-            checked={types.includes(type.value)}
-            locked={types.length === 1 && types.includes(type.value)}
-            onToggle={() => toggleType(type.value)}
-          />
-        ))}
-        <span aria-hidden="true" className="mx-1 h-6 w-px bg-border" />
+      <div className="flex shrink-0 flex-wrap items-center gap-x-3 gap-y-2 px-4 py-4">
+        <div role="group" aria-label="Tipo de transação" className="flex items-center gap-2">
+          <span className="text-xs font-medium text-muted-foreground">Tipo</span>
+          {TYPES.map((type) => (
+            <TypeChip
+              key={type.value}
+              label={type.label}
+              icon={type.icon}
+              checked={types.includes(type.value)}
+              locked={types.length === 1 && types.includes(type.value)}
+              onToggle={() => toggleType(type.value)}
+            />
+          ))}
+        </div>
+        <span aria-hidden="true" className="hidden h-5 w-px bg-border sm:block" />
         <FilterSelect
           label="Jogador"
           emptyText="Jogador: todos"
@@ -198,7 +202,23 @@ export function TransactionsPanel({ clubId, acronym }: TransactionsPanelProps) {
           options={playerOptions}
           value={playerId}
           onValueChange={setPlayerId}
+          className={cn(
+            'rounded-full data-[size=default]:h-8',
+            playerId && 'border-primary/30 bg-primary/10 text-primary',
+          )}
         />
+        <div className="ml-auto flex items-center gap-3">
+          {isFiltered && (
+            <Button variant="link" size="sm" className="h-auto p-0" onClick={clearFilters}>
+              Limpar filtros
+            </Button>
+          )}
+          {transactions.isSuccess && (
+            <span className="text-xs text-muted-foreground">
+              {list.length} {list.length === 1 ? 'transação' : 'transações'}
+            </span>
+          )}
+        </div>
       </div>
 
       <DataState
