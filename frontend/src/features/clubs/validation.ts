@@ -43,7 +43,7 @@ function appearsInOrder(letters: string, text: string): boolean {
 }
 
 // As letras da sigla aparecem no nome nessa ordem, começando pela primeira letra do nome.
-function acronymMatchesName(acronym: string, name: string): boolean {
+export function acronymMatchesName(acronym: string, name: string): boolean {
   const folded = foldText(name);
   const letters = foldText(acronym);
   return folded.startsWith(letters[0]) && appearsInOrder(letters, folded);

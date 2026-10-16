@@ -10,6 +10,7 @@ import { useCreateClub } from '../../hooks/clubs';
 import { getErrorMessage } from '../../lib/errors';
 import { formatMoney } from '../../lib/format';
 import type { Club } from '../../services/types';
+import { suggestAcronym } from './acronym';
 import { INITIAL_CASH } from './labels';
 import {
   EMPTY_CLUB_FORM,
@@ -34,6 +35,11 @@ export function ClubFormDialog({ clubs, onClose }: ClubFormDialogProps) {
   const [values, setValues] = useState<ClubFormValues>(EMPTY_CLUB_FORM);
   const [errors, setErrors] = useState<ClubFormErrors>({});
   const [conflict, setConflict] = useState<ClubConflict | null>(null);
+  // Enquanto a sigla não for escrita à mão, ela acompanha o nome.
+  const [acronymManual, setAcronymManual] = useState(false);
+
+  const taken = clubs.map((club) => club.acronym);
+  const suggestion = suggestAcronym(values.name, taken);
 
   // A recusa da API (por exemplo, quando a lista estava desatualizada) usa o mesmo alerta.
   const apiMessage = create.error ? getErrorMessage(create.error) : null;
@@ -41,19 +47,47 @@ export function ClubFormDialog({ clubs, onClose }: ClubFormDialogProps) {
     conflict ??
     (apiMessage ? { messages: [apiMessage], fields: fieldsOfApiConflict(apiMessage) } : null);
 
-  function setField(field: ClubField, value: string) {
-    setValues((current) => ({ ...current, [field]: value }));
-    setErrors((current) => ({ ...current, [field]: undefined }));
-    // Mexer no campo apontado pelo alerta tira o alerta.
-    if (shown?.fields.includes(field)) {
+  // Mexer no campo apontado pelo alerta tira o alerta.
+  function dismissConflictOn(...fields: ClubField[]) {
+    if (shown?.fields.some((field) => fields.includes(field))) {
       setConflict(null);
       create.reset();
     }
   }
 
-  const handleName = (event: ChangeEvent<HTMLInputElement>) => setField('name', event.target.value);
-  const handleAcronym = (event: ChangeEvent<HTMLInputElement>) =>
-    setField('acronym', toAcronymInput(event.target.value));
+  function setAcronym(value: string) {
+    setValues((current) => ({ ...current, acronym: value }));
+    setErrors((current) => ({ ...current, acronym: undefined }));
+    dismissConflictOn('acronym');
+  }
+
+  function handleName(event: ChangeEvent<HTMLInputElement>) {
+    const name = event.target.value;
+    setValues((current) => ({
+      ...current,
+      name,
+      acronym: acronymManual ? current.acronym : suggestAcronym(name, taken),
+    }));
+    setErrors((current) => ({
+      ...current,
+      name: undefined,
+      acronym: acronymManual ? current.acronym : undefined,
+    }));
+    dismissConflictOn('name', ...(acronymManual ? [] : (['acronym'] as ClubField[])));
+  }
+
+  // Escrever na sigla desliga a sugestão; esvaziar o campo liga de novo.
+  function handleAcronym(event: ChangeEvent<HTMLInputElement>) {
+    const acronym = toAcronymInput(event.target.value);
+    const manual = acronym !== '';
+    setAcronymManual(manual);
+    setAcronym(manual ? acronym : suggestion);
+  }
+
+  function applySuggestion() {
+    setAcronymManual(false);
+    setAcronym(suggestion);
+  }
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -108,12 +142,28 @@ export function ClubFormDialog({ clubs, onClose }: ClubFormDialogProps) {
           autoComplete="off"
           autoCapitalize="characters"
           maxLength={3}
-          hint="3 letras de A a Z, maiúsculas, que aparecem no nome nessa ordem; a primeira é a primeira letra do nome."
+          hint={
+            acronymManual
+              ? 'Escrita por você. 3 letras de A a Z que aparecem no nome nessa ordem; a primeira é a primeira letra do nome.'
+              : 'Sugerida pelo nome, e você pode editar. 3 letras de A a Z que aparecem no nome nessa ordem; a primeira é a primeira letra do nome.'
+          }
           value={values.acronym}
           error={errors.acronym}
           invalid={shown?.fields.includes('acronym')}
           onChange={handleAcronym}
         />
+
+        {acronymManual && suggestion !== '' && suggestion !== values.acronym && (
+          <Button
+            type="button"
+            variant="link"
+            size="sm"
+            className="-mt-2 h-auto self-start p-0"
+            onClick={applySuggestion}
+          >
+            Usar sugestão: {suggestion}
+          </Button>
+        )}
 
         <p className="flex items-center gap-2 rounded-xl border bg-muted/40 px-3 py-3 text-sm text-muted-foreground">
           <Wallet aria-hidden="true" className="size-4 shrink-0" />O clube começa com{' '}
