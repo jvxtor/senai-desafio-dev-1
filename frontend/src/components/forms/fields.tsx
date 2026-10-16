@@ -1,16 +1,11 @@
+import type { LucideIcon } from 'lucide-react';
 import { useId, type ComponentProps, type ReactNode } from 'react';
 import { cn } from '../../lib/utils';
 import { describedBy } from './field-utils';
 import { Alert, AlertDescription } from '../ui/alert';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 export interface FieldProps {
   label: string;
@@ -48,10 +43,16 @@ export function FieldFrame({ id, label, error, hint, hideLabel, className, child
   );
 }
 
-type TextFieldProps = FieldProps & Omit<ComponentProps<'input'>, 'className' | 'id'>;
+type TextFieldProps = FieldProps &
+  Omit<ComponentProps<'input'>, 'className' | 'id'> & {
+    /** Marca o campo como inválido sem escrever mensagem embaixo (ela aparece em outro lugar). */
+    invalid?: boolean;
+    /** Ícone dentro do campo, à esquerda. */
+    icon?: LucideIcon;
+  };
 
 export function TextField(props: TextFieldProps) {
-  const { label, error, hint, hideLabel, className, ...input } = props;
+  const { label, error, hint, hideLabel, className, invalid, icon: Icon, ...input } = props;
   const id = useId();
 
   return (
@@ -63,13 +64,21 @@ export function TextField(props: TextFieldProps) {
       hideLabel={hideLabel}
       className={className}
     >
-      <Input
-        id={id}
-        aria-invalid={error ? true : undefined}
-        aria-describedby={describedBy(id, error, hint)}
-        className="h-9"
-        {...input}
-      />
+      <div className="relative">
+        {Icon && (
+          <Icon
+            aria-hidden="true"
+            className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+          />
+        )}
+        <Input
+          id={id}
+          aria-invalid={error || invalid ? true : undefined}
+          aria-describedby={describedBy(id, error, hint)}
+          className={cn('h-9', Icon && 'pl-9')}
+          {...input}
+        />
+      </div>
     </FieldFrame>
   );
 }
