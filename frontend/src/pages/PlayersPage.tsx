@@ -1,6 +1,7 @@
 import { Plus, Users } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { DataState } from '../components/common/DataState';
+import { PageHeader } from '../components/common/PageHeader';
 import { Pagination } from '../components/common/Pagination';
 import { Button } from '../components/ui/button';
 import { BuyPlayerDialog } from '../features/players/BuyPlayerDialog';
@@ -48,26 +49,17 @@ function PlayersPage() {
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-5 short:gap-3 lg:h-full">
-      <header className="flex shrink-0 flex-wrap items-start justify-between gap-4">
-        <div className="flex items-start gap-4">
-          <span
-            aria-hidden="true"
-            className="grid size-12 shrink-0 place-items-center rounded-xl border bg-background text-primary"
-          >
-            <Users className="size-5" />
-          </span>
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">Jogadores</h1>
-            <p className="mt-1 text-sm text-muted-foreground short:hidden">
-              Cadastre jogadores, acompanhe os indicadores e compre os que estão livres.
-            </p>
-          </div>
-        </div>
-        <Button onClick={() => setDialog({ type: 'create' })}>
-          <Plus aria-hidden="true" />
-          Novo jogador
-        </Button>
-      </header>
+      <PageHeader
+        icon={Users}
+        title="Jogadores"
+        description="Cadastre jogadores, acompanhe os indicadores e compre os que estão livres."
+        action={
+          <Button onClick={() => setDialog({ type: 'create' })}>
+            <Plus aria-hidden="true" />
+            Novo jogador
+          </Button>
+        }
+      />
 
       <PlayersFilterBar
         draft={filters.draft}
