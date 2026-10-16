@@ -55,6 +55,35 @@ cd backend
 npx prisma migrate reset --force
 ```
 
+O `migrate reset` já roda o seed (veja abaixo) ao terminar. Para criar o banco sem dados de exemplo, use `npx prisma migrate reset --force --skip-seed`.
+
+### Dados de exemplo (opcional)
+
+O banco nasce vazio de propósito. Para testar a interface e a API sem cadastrar tudo à mão, rode o seed (`backend/prisma/seed`):
+
+```bash
+docker compose exec backend npm run db:seed
+# ou, fora do Docker, dentro de backend/:
+npm run db:seed
+```
+
+O seed cadastra 4 clubes, 27 jogadores contratados e 10 jogadores livres, com contratos, histórico de compras e escalação:
+
+| Clube | Caixa | Escalação | Para testar |
+| --- | --- | --- | --- |
+| Águias FC (AGU) | 133,27 | 2-1-1 completa | Compra recusada por passar de 50% do caixa (jogador de 86,10) |
+| Mangue FC (MAN) | 233,84 | 2-2 completa | Reserva doente (não pode ser escalado) e contrato já vencido (venda sem multa) |
+| Delta FC (DEL) | 266,79 | 1-2-1 completa | Compra de qualquer livre |
+| Leões do Sul (LEO) | 14,70 | sem escalação | Falta de caixa e partida recusada por escalação incompleta |
+
+Os livres cobrem as cinco posições, as três condições, promessas de 17 a 22 anos, veteranos acima de 35 e nomes com acento. Nenhuma partida é criada: gere pela API para ver a classificação mudar.
+
+Regras do seed:
+
+- Rodar de novo não duplica nada: se o banco já tem clubes ou jogadores, ele avisa e sai. Para apagar tudo e recriar, use `npm run db:seed -- --reset`.
+- O valor base e o valor de compra são calculados pelas mesmas funções da API, e o seed recusa um elenco cuja compra passaria de 50% do caixa. Os dados não contradizem as regras de negócio.
+- As datas dos contratos são relativas a hoje, então a fidelidade nunca nasce vencida por acaso.
+
 ## Rodar sem Docker (opcional)
 
 ```bash
@@ -103,6 +132,7 @@ Além da stack obrigatória (NestJS, React com Vite, PostgreSQL e Git):
 | `oxlint` | Lint |
 | `prettier` | Verificação de formatação |
 | `dotenv` | Ler o `.env` da raiz no `prisma.config.ts` |
+| `tsx` | Executar o seed em TypeScript (`npm run db:seed`) |
 | `typescript`, `@nestjs/cli`, `@nestjs/schematics` | Compilar e executar o projeto Nest |
 
 ## Decisões e premissas
