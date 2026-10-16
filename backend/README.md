@@ -46,6 +46,10 @@ npx prisma migrate reset --force --skip-seed   # apaga tudo e recria, sem dados 
 
 ### Dados de exemplo (opcional)
 
+Com Docker, rode o seed **em outro terminal**: o do `docker compose up` fica ocupado com os logs do backend. Espere a linha `Nest application successfully started` e, na raiz do repositório, use `docker compose exec backend npm run db:seed`.
+
+Fora do Docker, dentro de `backend/`:
+
 ```bash
 npm run db:seed              # 4 clubes, 27 jogadores contratados e 10 livres, com escalação
 npm run db:seed -- --reset   # apaga tudo e recria os dados de exemplo

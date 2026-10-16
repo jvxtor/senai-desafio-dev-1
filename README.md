@@ -26,9 +26,9 @@ Aplicação com backend (NestJS + Prisma), frontend (React + Vite) e banco Postg
 
    Na primeira vez, o backend instala as dependências, gera o client do Prisma e aplica a migration do banco sozinho, então demora um pouco mais (vai dar certo).
 
-   Caso deseje popular o banco de dados, aguarde a migration ser aplicada.
+   Esse terminal fica ocupado com os logs do backend enquanto o Compose estiver rodando. Não o feche nem use `Ctrl+C`, senão os serviços param. Se preferir deixar o terminal livre, suba com `docker compose up -d` e veja os logs, quando quiser, com `docker compose logs -f backend`.
 
-3. Popular o banco de dados (opcional):
+3. Popular o banco de dados (opcional), **em outro terminal**, na raiz do repositório. Espere a linha `Nest application successfully started` nos logs do backend (a migration já foi aplicada) e rode:
 
    ```bash
    docker compose exec backend npm run db:seed
@@ -73,7 +73,7 @@ O `migrate reset` já roda o seed (veja abaixo) ao terminar. Para criar o banco 
 O banco nasce vazio de propósito. Para testar a interface e a API sem cadastrar tudo à mão, rode o seed (`backend/prisma/seed`):
 
 ```bash
-# com Docker, na raiz do repositório:
+# com Docker, em outro terminal (o do docker compose up fica com os logs do backend), na raiz:
 docker compose exec backend npm run db:seed
 
 # fora do Docker, dentro de backend/:
