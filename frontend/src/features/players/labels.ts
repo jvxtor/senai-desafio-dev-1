@@ -23,6 +23,14 @@ export const POSITION_OPTIONS: SelectOption[] = (
   label: `${value} · ${POSITION_LABELS[value]}`,
 }));
 
+// O que cada condição muda no valor de mercado (as faixas de agilidade são as da API).
+export const CONDITION_DESCRIPTIONS: Record<Condition, string> = {
+  APTO: 'Sem desconto por condição.',
+  MAL_CONDICIONADO:
+    'Desconto de 15%. Agilidade de 80 a 100 corta pela metade; de 1 a 30 soma 10 pontos.',
+  DOENTE: 'Desconto de 30%, com o mesmo ajuste de agilidade.',
+};
+
 export const CONDITION_OPTIONS: SelectOption[] = (
   ['APTO', 'MAL_CONDICIONADO', 'DOENTE'] as Condition[]
 ).map((value) => ({ value, label: CONDITION_LABELS[value] }));

@@ -33,6 +33,9 @@ function PlayersPage() {
     [clubs.data],
   );
 
+  const clubNameOf = (player: Player) =>
+    player.club_id === null ? undefined : clubsById.get(player.club_id)?.name;
+
   const list = players.data?.data ?? [];
   const meta = players.data?.meta;
   const currentPage = filters.filters.page ?? 1;
@@ -172,9 +175,7 @@ function PlayersPage() {
       {dialog?.type === 'details' && (
         <PlayerDetailsSheet
           player={dialog.player}
-          clubName={
-            dialog.player.club_id === null ? undefined : clubsById.get(dialog.player.club_id)?.name
-          }
+          clubName={clubNameOf(dialog.player)}
           onClose={close}
           onEdit={(player) => setDialog({ type: 'edit', player })}
           onChangeCondition={(player) => setDialog({ type: 'condition', player })}
@@ -182,7 +183,13 @@ function PlayersPage() {
         />
       )}
       {dialog?.type === 'edit' && <PlayerFormDialog player={dialog.player} onClose={close} />}
-      {dialog?.type === 'condition' && <ConditionDialog player={dialog.player} onClose={close} />}
+      {dialog?.type === 'condition' && (
+        <ConditionDialog
+          player={dialog.player}
+          clubName={clubNameOf(dialog.player)}
+          onClose={close}
+        />
+      )}
       {dialog?.type === 'buy' && <BuyPlayerDialog player={dialog.player} onClose={close} />}
       {dialog?.type === 'delete' && (
         <DeletePlayerDialog player={dialog.player} onClose={close} onDeleted={handleDeleted} />
