@@ -21,7 +21,7 @@ Aplicação com backend (NestJS + Prisma), frontend (React + Vite) e banco Postg
 2. Suba tudo (banco, API e frontend):
 
    ```bash
-   docker compose up -d
+   docker compose up
    ```
 
    Na primeira vez, o backend instala as dependências, gera o client do Prisma e aplica a migration do banco sozinho, então demora um pouco mais (vai da certo).
@@ -117,11 +117,28 @@ npm run lint            # oxlint
 npm run format:check    # prettier, só verifica, sem alterar arquivos
 ```
 
+## Testes, lint e formatação (frontend)
+
+Todos terminam sozinhos, sem modo de observação:
+
+```bash
+cd frontend
+npm install
+npm test                # Vitest + Testing Library: formatação, validações, filtros e componentes
+npm run lint            # ESLint
+npm run format:check    # Prettier, só verifica, sem alterar arquivos (use npm run format para corrigir)
+```
+
 ## Estrutura
 
 ```
 backend/    API NestJS 12 (módulos: players, clubs, market, lineup, matches, prisma)
-frontend/   React 19 + Vite
+frontend/   React 19 + Vite + TypeScript
+  src/services/    chamadas à API (axios), uma por recurso
+  src/hooks/       hooks de dados (React Query) e chaves de cache
+  src/pages/       uma tela por rota (jogadores, clubes, clube, partidas, partida, classificação)
+  src/features/    componentes e regras de cada tela
+  src/components/  componentes compartilhados (tabelas, campos, diálogos) e o shadcn/ui
 docker-compose.yml
 ```
 
@@ -146,6 +163,22 @@ Além da stack obrigatória (NestJS, React com Vite, PostgreSQL e Git):
 | `tsx` | Executar o seed em TypeScript (`npm run db:seed`) |
 | `typescript`, `@nestjs/cli`, `@nestjs/schematics` | Compilar e executar o projeto Nest |
 
+### Frontend
+
+| Biblioteca | Motivo |
+| --- | --- |
+| `react`, `react-dom`, `vite`, `typescript` | Interface, servidor de desenvolvimento e build, com tipos |
+| `react-router` | Rotas das telas e trilha de navegação |
+| `@tanstack/react-query` | Cache e atualização dos dados da API depois de cada ação |
+| `axios` | Cliente HTTP, com o tratamento da mensagem de erro da API num só lugar |
+| `tailwindcss`, `@tailwindcss/vite`, `tw-animate-css` | Estilos |
+| `shadcn`, `@base-ui/react`, `class-variance-authority`, `cn`, `lucide-react`, `@fontsource-variable/geist` | Componentes do shadcn/ui (botões, tabelas, diálogos, menus, abas), seus primitivos, ícones e a fonte |
+| `react-day-picker` | Calendário do fim da fidelidade na compra |
+| `sonner` | Avisos de sucesso e de erro |
+| `vitest`, `jsdom`, `@testing-library/react`, `@testing-library/user-event`, `@testing-library/jest-dom` | Testes automatizados de funções e de componentes |
+| `eslint`, `typescript-eslint`, `eslint-plugin-react-hooks`, `eslint-plugin-react-refresh` | Lint |
+| `prettier` | Verificação de formatação |
+
 ## Decisões e premissas
 
 Pontos que o enunciado deixou em aberto ou que merecem registro:
@@ -163,10 +196,16 @@ Pontos que o enunciado deixou em aberto ou que merecem registro:
 - **Escalação:** o `PUT` substitui a escalação inteira. Jogador vendido ou que passa a `DOENTE` sai da escalação, e o clube só volta a jogar quando escalar de novo.
 - **Erros:** toda recusa devolve `{ "message": "..." }` em texto, sem stack trace, por um filtro global.
 
+- **Frontend, regras:** a tela não recalcula nada que a API calcula (valor de mercado, overall, taxa, multa, comissão, placar, classificação). Só soma valor e taxa para mostrar o custo total da compra.
+- **Frontend, datas:** o fim da fidelidade é digitado no horário de Brasília e enviado com `-03:00`. As datas das respostas são lidas como a API as devolve, sem converter fuso.
+- **Frontend, validação:** os formulários conferem campos obrigatórios, tamanhos e faixas antes de enviar. Regras que dependem do banco (nome ou sigla repetidos, caixa, elenco cheio) ficam com a API, e a tela mostra o `message` dela. A lista de clubes já carregada avisa de nome e sigla repetidos antes do envio, mas a API continua sendo a palavra final.
+- **Frontend, busca de clubes:** a API de clubes só ordena, então a busca por nome ou sigla roda na lista carregada (no máximo 20 clubes).
+- **Frontend, escalação:** é editada direto na aba do clube. O formulário não deixa escolher jogador doente nem o mesmo jogador em duas vagas.
+
 ## Funcionalidades não implementadas
 
 - **Backend:** nenhuma.
-- **Frontend:** as telas ainda não foram implementadas; hoje há só o projeto base com Vite, Tailwind e shadcn/ui. 
+- **Frontend:** nenhuma.
 
 ## Uso de inteligência artificial
 

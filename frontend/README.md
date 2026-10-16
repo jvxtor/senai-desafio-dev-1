@@ -1,75 +1,55 @@
-# React + TypeScript + Vite
+# Frontend – Passe, gestão da liga
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Interface em React 19 + Vite + TypeScript do mercado de jogadores. O passo a passo completo (Docker, banco, variáveis, bibliotecas e decisões) está no [README da raiz](../README.md).
 
-Currently, two official plugins are available:
+## Executar
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Pelo Docker, na raiz do repositório: `docker compose up ` (a interface abre em http://localhost:5173).
 
-## React Compiler
+Sem Docker, com a API no ar em `http://localhost:3000`:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+cd frontend
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+## Variável de ambiente
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+| Variável | Padrão | Para quê |
+| --- | --- | --- |
+| `VITE_API_URL` | `http://localhost:3000/api/v1` | Endereço da API visto pelo navegador, com o prefixo `/api/v1` |
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Se a API mudar de endereço, atualize também o `CORS_ORIGIN` da API.
 
+## Comandos
+
+```bash
+npm test                # testes (Vitest + Testing Library), terminam sozinhos
+npm run lint            # ESLint
+npm run format:check    # Prettier, só verifica
+npm run format          # Prettier, corrige os arquivos
+npm run build           # tipos e build de produção
+```
+
+## Telas
+
+| Rota | Tela |
+| --- | --- |
+| `/jogadores` | Lista com busca, filtros, ordenação e paginação; cadastro, edição, condição, compra e exclusão |
+| `/clubes` | Lista de clubes com busca e ordenação, e cadastro |
+| `/clubes/:id` | Caixa, valor do elenco e patrimônio; elenco com venda, escalação e histórico com exportação em CSV |
+| `/partidas` | Última partida, histórico com filtro por clube e nova partida |
+| `/partidas/:id` | Placar, jogadores em campo e os 6 duelos |
+| `/classificacao` | Tabela da liga e últimas partidas |
+
+## Estrutura
+
+```
+src/services/    chamadas à API (axios), uma por recurso
+src/hooks/       hooks de dados (React Query) e chaves de cache
+src/pages/       uma tela por rota
+src/features/    componentes e regras de cada tela
+src/components/  componentes compartilhados e o shadcn/ui (components/ui)
+src/lib/         formatação, textos e tratamento de erros
 ```
