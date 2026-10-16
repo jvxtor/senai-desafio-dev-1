@@ -1,4 +1,3 @@
-import { Shield } from 'lucide-react';
 import { Badge } from '../../components/ui/badge';
 import {
   Table,
@@ -55,15 +54,15 @@ export function ClubsTable({ clubs }: ClubsTableProps) {
               <div className="flex items-center gap-2.5">
                 <span
                   aria-hidden="true"
-                  className="grid size-8 shrink-0 place-items-center rounded-lg bg-muted text-muted-foreground"
+                  className="grid size-9 shrink-0 place-items-center rounded-lg border bg-muted/60 text-[0.7rem] font-medium"
                 >
-                  <Shield className="size-4" />
+                  {club.acronym}
                 </span>
                 <span className="font-medium">{club.name}</span>
               </div>
             </TableCell>
             <TableCell className={CELL}>
-              <Badge variant="secondary" className="rounded-md">
+              <Badge variant="outline" className="rounded-md font-medium">
                 {club.acronym}
               </Badge>
             </TableCell>
