@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createClub, getClub, listClubs } from '../services/clubs';
 import type { ClubSort, CreateClubInput } from '../services/types';
 import { invalidateLeagueTable } from './invalidation';
@@ -8,6 +8,8 @@ export function useClubs(sort?: ClubSort) {
   return useQuery({
     queryKey: queryKeys.clubs.list(sort),
     queryFn: () => listClubs(sort),
+    // Ao trocar a ordenação, a lista anterior fica na tela até a nova chegar.
+    placeholderData: keepPreviousData,
   });
 }
 

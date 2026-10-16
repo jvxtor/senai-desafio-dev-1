@@ -29,7 +29,7 @@ const SECTIONS: { title: string; items: NavItem[] }[] = [
     title: 'Mercado',
     items: [
       { label: 'Jogadores', icon: Users, to: '/jogadores' },
-      { label: 'Clubes', icon: Shield },
+      { label: 'Clubes', icon: Shield, to: '/clubes' },
     ],
   },
   {

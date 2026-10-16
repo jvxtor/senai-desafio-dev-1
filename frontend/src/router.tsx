@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router';
 import App from './App';
 import { AppLayout, type RouteHandle } from './layouts/AppLayout';
+import ClubsPage from './pages/ClubsPage';
 import NotFound from './pages/NotFound';
 import PlayersPage from './pages/PlayersPage';
 
@@ -13,6 +14,11 @@ export const router = createBrowserRouter([
         path: '/jogadores',
         element: <PlayersPage />,
         handle: { crumbs: ['Mercado', 'Jogadores'] } satisfies RouteHandle,
+      },
+      {
+        path: '/clubes',
+        element: <ClubsPage />,
+        handle: { crumbs: ['Mercado', 'Clubes'] } satisfies RouteHandle,
       },
     ],
   },
