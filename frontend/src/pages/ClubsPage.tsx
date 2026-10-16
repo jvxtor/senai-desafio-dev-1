@@ -1,5 +1,6 @@
 import { Plus, Shield } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router';
 import { DataState } from '../components/common/DataState';
 import { PageHeader } from '../components/common/PageHeader';
 import { SearchInput } from '../components/filters/SearchInput';
@@ -15,7 +16,11 @@ import type { ClubSort } from '../services/types';
 function ClubsPage() {
   const [sort, setSort] = useState<ClubSort>('name');
   const [search, setSearch] = useState('');
-  const [creating, setCreating] = useState(false);
+  // O cadastro vive na URL (?novo=1): assim o + da barra lateral abre o diálogo daqui.
+  const [params, setParams] = useSearchParams();
+  const creating = params.get('novo') === '1';
+  const openCreate = () => setParams({ novo: '1' });
+  const closeCreate = () => setParams({});
   const clubs = useClubs(sort);
 
   const all = useMemo(() => clubs.data ?? [], [clubs.data]);
@@ -32,7 +37,7 @@ function ClubsPage() {
   const isFull = all.length >= MAX_CLUBS;
   const newClubButton = (
     <Button
-      onClick={() => setCreating(true)}
+      onClick={openCreate}
       disabled={isFull}
       title={isFull ? `A liga aceita no máximo ${MAX_CLUBS} clubes.` : undefined}
     >
@@ -105,7 +110,7 @@ function ClubsPage() {
                 <p className="text-sm text-muted-foreground">
                   Cadastre o primeiro clube para montar a liga.
                 </p>
-                <Button onClick={() => setCreating(true)}>
+                <Button onClick={openCreate}>
                   <Plus aria-hidden="true" />
                   Novo clube
                 </Button>
@@ -132,7 +137,7 @@ function ClubsPage() {
         </DataState>
       </section>
 
-      {creating && <ClubFormDialog clubs={all} onClose={() => setCreating(false)} />}
+      {creating && <ClubFormDialog clubs={all} onClose={closeCreate} />}
     </div>
   );
 }

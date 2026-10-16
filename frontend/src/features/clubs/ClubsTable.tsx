@@ -1,4 +1,7 @@
+import { ChevronRight } from 'lucide-react';
+import { Link, useNavigate } from 'react-router';
 import { Badge } from '../../components/ui/badge';
+import { buttonVariants } from '../../components/ui/button';
 import {
   Table,
   TableBody,
@@ -21,6 +24,7 @@ const HEADERS = [
   { label: 'Caixa', align: 'right' },
   { label: 'Valor do elenco', align: 'right' },
   { label: 'Patrimônio', align: 'right' },
+  { label: 'Ações', align: 'right' },
 ] as const;
 
 const ALIGN_CLASS = { left: 'text-left', right: 'text-right' } as const;
@@ -28,6 +32,8 @@ const ALIGN_CLASS = { left: 'text-left', right: 'text-right' } as const;
 const CELL = 'px-3 py-2.5';
 
 export function ClubsTable({ clubs }: ClubsTableProps) {
+  const navigate = useNavigate();
+
   return (
     // O quadro é o único que rola; o cabeçalho fica fixo no topo dele.
     <Table containerClassName="h-full max-h-[28rem] overflow-y-auto lg:max-h-none">
@@ -42,14 +48,23 @@ export function ClubsTable({ clubs }: ClubsTableProps) {
                 ALIGN_CLASS[header.align],
               )}
             >
-              {header.label}
+              {header.label === 'Ações' ? <span className="sr-only">Ações</span> : header.label}
             </TableHead>
           ))}
         </TableRow>
       </TableHeader>
       <TableBody>
         {clubs.map((club) => (
-          <TableRow key={club.id}>
+          <TableRow
+            key={club.id}
+            className="cursor-pointer"
+            onClick={(event) => {
+              // O nome e o botão já são links; o resto da linha também leva ao clube.
+              if (!(event.target as HTMLElement).closest('a, button')) {
+                void navigate(`/clubes/${club.id}`);
+              }
+            }}
+          >
             <TableCell className={CELL}>
               <div className="flex items-center gap-2.5">
                 <span
@@ -58,7 +73,12 @@ export function ClubsTable({ clubs }: ClubsTableProps) {
                 >
                   {club.acronym}
                 </span>
-                <span className="font-medium">{club.name}</span>
+                <Link
+                  to={`/clubes/${club.id}`}
+                  className="rounded-sm font-medium outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50"
+                >
+                  {club.name}
+                </Link>
               </div>
             </TableCell>
             <TableCell className={CELL}>
@@ -74,6 +94,16 @@ export function ClubsTable({ clubs }: ClubsTableProps) {
             </TableCell>
             <TableCell className={cn(CELL, 'text-right font-semibold tabular-nums')}>
               {formatMoney(club.net_worth)}
+            </TableCell>
+            <TableCell className={cn(CELL, 'text-right')}>
+              <Link
+                to={`/clubes/${club.id}`}
+                aria-label={`Ver clube ${club.name}`}
+                className={buttonVariants({ variant: 'outline', size: 'sm' })}
+              >
+                Ver clube
+                <ChevronRight aria-hidden="true" />
+              </Link>
             </TableCell>
           </TableRow>
         ))}
