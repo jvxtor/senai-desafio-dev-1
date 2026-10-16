@@ -35,10 +35,10 @@ function ClubPage() {
   const squad = club.data?.players ?? [];
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-5">
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-5 short:gap-3 lg:h-full">
       <Link
         to="/clubes"
-        className="inline-flex w-fit items-center gap-1.5 rounded-sm text-sm text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
+        className="inline-flex w-fit shrink-0 items-center gap-1.5 rounded-sm text-sm text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
       >
         <ArrowLeft aria-hidden="true" className="size-4" />
         Voltar para clubes
@@ -66,7 +66,7 @@ function ClubPage() {
               }
             />
 
-            <div className="grid gap-3 sm:grid-cols-3">
+            <div className="grid shrink-0 gap-3 sm:grid-cols-3">
               <MetricCard
                 label="Caixa"
                 icon={Wallet}
@@ -87,7 +87,7 @@ function ClubPage() {
               />
             </div>
 
-            <Tabs defaultValue="squad">
+            <Tabs defaultValue="squad" className="min-h-0 flex-1">
               <TabsList aria-label="Seções do clube">
                 <TabsTrigger value="squad" className="px-3">
                   Elenco ({squad.length})
@@ -100,8 +100,8 @@ function ClubPage() {
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="squad">
-                <div className="rounded-xl border bg-background">
+              <TabsContent value="squad" className="flex min-h-0 flex-1 flex-col">
+                <div className="flex min-h-0 flex-1 flex-col rounded-xl border bg-background lg:min-h-56">
                   {squad.length === 0 ? (
                     <div className="flex flex-col items-center gap-3 px-6 py-10 text-center">
                       <p className="text-sm font-medium">Este clube ainda não tem jogadores</p>
@@ -122,7 +122,7 @@ function ClubPage() {
                 </div>
               </TabsContent>
 
-              <TabsContent value="lineup">
+              <TabsContent value="lineup" className="flex min-h-0 flex-1 flex-col">
                 <LineupPanel
                   lineup={lineup.data}
                   isPending={lineup.isPending}
@@ -132,7 +132,7 @@ function ClubPage() {
                 />
               </TabsContent>
 
-              <TabsContent value="history">
+              <TabsContent value="history" className="flex min-h-0 flex-1 flex-col">
                 <TransactionsPanel clubId={club.data.id} acronym={club.data.acronym} />
               </TabsContent>
             </Tabs>

@@ -69,9 +69,9 @@ export function TransactionsPanel({ clubId, acronym }: TransactionsPanelProps) {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex min-h-0 flex-1 flex-col gap-4">
       {summary && (
-        <dl className="grid grid-cols-2 gap-4 rounded-xl border bg-background p-4 sm:grid-cols-5">
+        <dl className="grid shrink-0 grid-cols-2 gap-4 rounded-xl border bg-background p-4 sm:grid-cols-5">
           <Stat label="Total gasto">{formatMoney(summary.total_spent)}</Stat>
           <Stat label="Total recebido">{formatMoney(summary.total_received)}</Stat>
           <Stat label="Taxas">{formatMoney(summary.total_fees)}</Stat>
@@ -80,8 +80,8 @@ export function TransactionsPanel({ clubId, acronym }: TransactionsPanelProps) {
         </dl>
       )}
 
-      <div className="rounded-xl border bg-background">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b px-4 py-3">
+      <div className="flex min-h-0 flex-1 flex-col rounded-xl border bg-background lg:min-h-56">
+        <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-b px-4 py-3">
           <SelectField
             label="Tipo de transação"
             hideLabel
@@ -119,8 +119,8 @@ export function TransactionsPanel({ clubId, acronym }: TransactionsPanelProps) {
             </>
           }
         >
-          <Table>
-            <TableHeader>
+          <Table containerClassName="max-h-[28rem] min-h-0 flex-1 overflow-y-auto lg:max-h-none">
+            <TableHeader className="sticky top-0 z-10 bg-background shadow-[0_1px_0_0_var(--border)]">
               <TableRow>
                 {HEADERS.map((header) => (
                   <TableHead

@@ -78,7 +78,7 @@ export function LineupPanel({ lineup, isPending, error, onRetry, onEdit }: Lineu
   const starters = lineup?.players ?? [];
 
   return (
-    <div className="flex flex-col rounded-xl border bg-background">
+    <div className="flex min-h-0 flex-col overflow-hidden rounded-xl border bg-background lg:max-h-full">
       <DataState
         isPending={isPending}
         error={error}
@@ -100,7 +100,7 @@ export function LineupPanel({ lineup, isPending, error, onRetry, onEdit }: Lineu
       >
         {formation && (
           <>
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b px-4 py-3">
+            <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-b px-4 py-3">
               <div className="flex items-center gap-2">
                 <h3 className="text-sm font-semibold">Formação {formation}</h3>
                 <Badge variant={starters.length === LINEUP_SIZE ? 'secondary' : 'outline'}>
@@ -114,7 +114,7 @@ export function LineupPanel({ lineup, isPending, error, onRetry, onEdit }: Lineu
                 Editar escalação
               </Button>
             </div>
-            <div className="flex flex-col gap-4 p-4">
+            <div className="flex min-h-0 flex-col gap-4 overflow-y-auto p-4">
               {SECTORS_TOP_DOWN.filter((sector) => countInSector(formation, sector) > 0).map(
                 (sector) => (
                   <SectorRow
