@@ -1,36 +1,78 @@
-import { Landmark, Shield, ShoppingCart, Users, Wallet } from 'lucide-react';
+import {
+  ClipboardList,
+  History,
+  Landmark,
+  Shield,
+  Shirt,
+  ShoppingCart,
+  Users,
+  Wallet,
+} from 'lucide-react';
+import type { ReactNode } from 'react';
 import { useState } from 'react';
-import { useParams } from 'react-router';
+import { Link, useParams } from 'react-router';
 import { DataState } from '../components/common/DataState';
 import { MetricCard } from '../components/common/MetricCard';
 import { PageHeader } from '../components/common/PageHeader';
-import { Button } from '../components/ui/button';
+import { buttonVariants } from '../components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
-import { BuyPlayersDialog } from '../features/clubs/BuyPlayersDialog';
 import { LineupDialog } from '../features/clubs/LineupDialog';
 import { LineupPanel } from '../features/clubs/LineupPanel';
 import { SellPlayerDialog } from '../features/clubs/SellPlayerDialog';
 import { SquadTable } from '../features/clubs/SquadTable';
 import { TransactionsPanel } from '../features/clubs/TransactionsPanel';
-import { BuyPlayerDialog } from '../features/players/BuyPlayerDialog';
 import { ConditionDialog } from '../features/players/ConditionDialog';
 import { PlayerDetailsSheet } from '../features/players/PlayerDetailsSheet';
 import { PlayerFormDialog } from '../features/players/PlayerFormDialog';
+import { FREE_PLAYERS_URL } from '../features/players/filters';
 import { useClub } from '../hooks/clubs';
 import { useLineup } from '../hooks/lineup';
+import { useTransactions } from '../hooks/market';
 import { formatMoney } from '../lib/format';
 import type { Player, SquadPlayer } from '../services/types';
 
 type DialogState =
-  | { type: 'buyList' | 'lineup' }
-  | { type: 'buy' | 'sheet' | 'edit' | 'condition'; player: Player }
+  | { type: 'lineup' }
+  | { type: 'sheet' | 'edit' | 'condition'; player: Player }
   | { type: 'sell'; player: SquadPlayer }
   | null;
+
+// Abas em linha: ícone, nome e contador; a ativa ganha o sublinhado azul e o contador azulado.
+const TAB_CLASS =
+  'flex-none gap-2 px-1 group-data-horizontal/tabs:after:-bottom-px after:bg-primary ' +
+  'data-active:[&_[data-slot=tab-count]]:bg-primary/10 data-active:[&_[data-slot=tab-count]]:text-primary';
+
+function TabLabel({
+  icon: Icon,
+  count,
+  children,
+}: {
+  icon: typeof Shirt;
+  count?: number;
+  children: ReactNode;
+}) {
+  return (
+    <>
+      <Icon aria-hidden="true" className="size-4" />
+      {children}
+      {count !== undefined && (
+        <span
+          data-slot="tab-count"
+          className="rounded-full bg-muted px-1.5 text-xs font-medium tabular-nums"
+        >
+          {count}
+        </span>
+      )}
+    </>
+  );
+}
 
 function ClubPage() {
   const clubId = Number(useParams().id);
   const club = useClub(clubId);
   const lineup = useLineup(clubId);
+  // Sem filtros: é a mesma consulta que o histórico usa, então só conta uma vez.
+  const history = useTransactions(clubId);
   const [dialog, setDialog] = useState<DialogState>(null);
   const [tab, setTab] = useState('squad');
   const close = () => setDialog(null);
@@ -54,10 +96,10 @@ function ClubPage() {
               title={club.data.name}
               description={`Sigla ${club.data.acronym} · ${squad.length} ${squad.length === 1 ? 'jogador' : 'jogadores'} no elenco`}
               action={
-                <Button onClick={() => setDialog({ type: 'buyList' })}>
+                <Link to={FREE_PLAYERS_URL} className={buttonVariants()}>
                   <ShoppingCart aria-hidden="true" />
                   Comprar jogadores
-                </Button>
+                </Link>
               }
             />
 
@@ -87,15 +129,23 @@ function ClubPage() {
               onValueChange={(next) => setTab(String(next))}
               className="min-h-0 flex-1"
             >
-              <TabsList aria-label="Seções do clube">
-                <TabsTrigger value="squad" className="px-3">
-                  Elenco ({squad.length})
+              <TabsList
+                variant="line"
+                aria-label="Seções do clube"
+                className="h-10 w-full justify-start gap-4 overflow-x-auto overflow-y-hidden border-b p-0 sm:gap-6"
+              >
+                <TabsTrigger value="squad" className={TAB_CLASS}>
+                  <TabLabel icon={Shirt} count={squad.length}>
+                    Elenco
+                  </TabLabel>
                 </TabsTrigger>
-                <TabsTrigger value="lineup" className="px-3">
-                  Escalação
+                <TabsTrigger value="lineup" className={TAB_CLASS}>
+                  <TabLabel icon={ClipboardList}>Escalação</TabLabel>
                 </TabsTrigger>
-                <TabsTrigger value="history" className="px-3">
-                  Histórico
+                <TabsTrigger value="history" className={TAB_CLASS}>
+                  <TabLabel icon={History} count={history.data?.data.length}>
+                    Histórico
+                  </TabLabel>
                 </TabsTrigger>
               </TabsList>
 
@@ -107,10 +157,10 @@ function ClubPage() {
                       <p className="text-sm text-muted-foreground">
                         Compre jogadores livres para montar o elenco.
                       </p>
-                      <Button onClick={() => setDialog({ type: 'buyList' })}>
+                      <Link to={FREE_PLAYERS_URL} className={buttonVariants()}>
                         <ShoppingCart aria-hidden="true" />
                         Comprar jogadores
-                      </Button>
+                      </Link>
                     </div>
                   ) : (
                     <SquadTable
@@ -137,17 +187,6 @@ function ClubPage() {
               </TabsContent>
             </Tabs>
 
-            {dialog?.type === 'buyList' && (
-              <BuyPlayersDialog
-                clubName={club.data.name}
-                clubCash={club.data.cash}
-                onBuy={(player) => setDialog({ type: 'buy', player })}
-                onClose={close}
-              />
-            )}
-            {dialog?.type === 'buy' && (
-              <BuyPlayerDialog player={dialog.player} clubId={club.data.id} onClose={close} />
-            )}
             {dialog?.type === 'lineup' && (
               <LineupDialog
                 clubId={club.data.id}
