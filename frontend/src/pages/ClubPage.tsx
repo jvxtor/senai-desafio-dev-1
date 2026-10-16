@@ -1,6 +1,6 @@
-import { ArrowLeft, Landmark, Shield, ShoppingCart, Users, Wallet } from 'lucide-react';
+import { Landmark, Shield, ShoppingCart, Users, Wallet } from 'lucide-react';
 import { useState } from 'react';
-import { Link, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import { DataState } from '../components/common/DataState';
 import { MetricCard } from '../components/common/MetricCard';
 import { PageHeader } from '../components/common/PageHeader';
@@ -36,14 +36,6 @@ function ClubPage() {
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-5 short:gap-3 lg:h-full">
-      <Link
-        to="/clubes"
-        className="inline-flex w-fit shrink-0 items-center gap-1.5 rounded-sm text-sm text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
-      >
-        <ArrowLeft aria-hidden="true" className="size-4" />
-        Voltar para clubes
-      </Link>
-
       <DataState
         isPending={club.isPending}
         error={club.error}
