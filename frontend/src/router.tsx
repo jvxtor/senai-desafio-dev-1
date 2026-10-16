@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router";
 import App from "./App";
-import  NotFound  from './NotFound'
+import  NotFound  from './pages/NotFound'
 
 export const router = createBrowserRouter([
 
