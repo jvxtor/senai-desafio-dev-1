@@ -8,3 +8,6 @@ export const CLUB_SORT_OPTIONS: { value: ClubSort; label: string }[] = [
 
 /** Limite de clubes da liga, o mesmo que a API aplica no cadastro. */
 export const MAX_CLUBS = 20;
+
+/** Caixa com que todo clube novo nasce (o padrão do banco). */
+export const INITIAL_CASH = 300;

@@ -1,5 +1,5 @@
 import { foldText, normalizeSpaces } from '../../lib/text';
-import type { CreateClubInput } from '../../services/types';
+import type { Club, CreateClubInput } from '../../services/types';
 
 /** O que está nos campos do formulário, sempre como texto. */
 export interface ClubFormValues {
@@ -7,7 +7,14 @@ export interface ClubFormValues {
   acronym: string;
 }
 
-export type ClubFormErrors = Partial<Record<keyof ClubFormValues, string>>;
+export type ClubField = keyof ClubFormValues;
+export type ClubFormErrors = Partial<Record<ClubField, string>>;
+
+/** Nome ou sigla que já são de outro clube: aparece num alerta, com o campo marcado. */
+export interface ClubConflict {
+  messages: string[];
+  fields: ClubField[];
+}
 
 export const EMPTY_CLUB_FORM: ClubFormValues = { name: '', acronym: '' };
 
@@ -71,11 +78,40 @@ function validateAcronym(acronym: string, nameIsValid: boolean, name: string): s
   return undefined;
 }
 
-/** Confere o formulário antes de enviar; a API ainda decide nome e sigla repetidos. */
-export function validateClubForm(values: ClubFormValues): {
-  errors: ClubFormErrors;
-  isValid: boolean;
-} {
+// Como a API: o nome repetido ignora maiúsculas e minúsculas, mas NÃO ignora acentos
+// ("Aguias FC" e "Águias FC" são clubes diferentes). A sigla já vem em maiúsculas.
+function findConflict(
+  values: ClubFormValues,
+  errors: ClubFormErrors,
+  existing: Club[],
+): ClubConflict | undefined {
+  const name = normalizeSpaces(values.name);
+  const messages: string[] = [];
+  const fields: ClubField[] = [];
+
+  const sameName = errors.name
+    ? undefined
+    : existing.find((club) => club.name.toLowerCase() === name.toLowerCase());
+  if (sameName) {
+    messages.push(`Já existe um clube com o nome “${sameName.name}”.`);
+    fields.push('name');
+  }
+  if (!errors.acronym && existing.some((club) => club.acronym === values.acronym)) {
+    messages.push(`Já existe um clube com a sigla “${values.acronym}”.`);
+    fields.push('acronym');
+  }
+  return messages.length > 0 ? { messages, fields } : undefined;
+}
+
+/**
+ * Confere o formulário antes de enviar. Erros de formato aparecem junto do campo; nome ou
+ * sigla repetidos (contra a lista já carregada) viram um conflito. A API ainda decide por
+ * último, porque a lista pode estar desatualizada.
+ */
+export function validateClubForm(
+  values: ClubFormValues,
+  existing: Club[] = [],
+): { errors: ClubFormErrors; conflict?: ClubConflict; isValid: boolean } {
   const name = normalizeSpaces(values.name);
   const nameError = validateName(values.name);
   const acronymError = validateAcronym(values.acronym, nameError === undefined, name);
@@ -83,9 +119,20 @@ export function validateClubForm(values: ClubFormValues): {
   const errors: ClubFormErrors = {};
   if (nameError) errors.name = nameError;
   if (acronymError) errors.acronym = acronymError;
-  return { errors, isValid: Object.keys(errors).length === 0 };
+
+  const conflict = findConflict(values, errors, existing);
+  return { errors, conflict, isValid: Object.keys(errors).length === 0 && !conflict };
 }
 
 export function toCreateInput(values: ClubFormValues): CreateClubInput {
   return { name: normalizeSpaces(values.name), acronym: values.acronym };
+}
+
+/** Descobre a que campo a recusa da API se refere, pelo texto da mensagem. */
+export function fieldsOfApiConflict(message: string): ClubField[] {
+  const text = message.toLowerCase();
+  if (text.includes('nome ou sigla')) return ['name', 'acronym'];
+  if (text.includes('sigla')) return ['acronym'];
+  if (text.includes('nome')) return ['name'];
+  return [];
 }
