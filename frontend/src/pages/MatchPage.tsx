@@ -2,44 +2,12 @@ import { ArrowLeft, HeartPulse } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Link, useParams } from 'react-router';
 import { DataState } from '../components/common/DataState';
-import { Badge } from '../components/ui/badge';
 import { BallIcon } from '../features/matches/BallIcon';
 import { MatchDuelsTable } from '../features/matches/MatchDuelsTable';
 import { MatchPitch } from '../features/matches/MatchPitch';
-import { RESULT_LABELS, RESULT_STYLE } from '../features/matches/labels';
+import { MatchScoreboard } from '../features/matches/MatchScoreboard';
 import { useClubs } from '../hooks/clubs';
 import { useMatch } from '../hooks/matches';
-import { formatDateAndTime } from '../lib/format';
-import type { Club, MatchSide } from '../services/types';
-
-function Team(props: { side: MatchSide; role: string; acronym: string; align: 'right' | 'left' }) {
-  const { side, role, acronym, align } = props;
-  const right = align === 'right';
-
-  const text = (
-    <div className={right ? 'text-right' : 'text-left'}>
-      <p className="text-lg font-semibold">{side.club_name}</p>
-      <p className="text-xs text-muted-foreground">
-        {role} · {side.formation}
-      </p>
-    </div>
-  );
-  const tag = (
-    <span
-      aria-hidden="true"
-      className="grid size-12 place-items-center rounded-xl border bg-background text-sm font-semibold"
-    >
-      {acronym}
-    </span>
-  );
-
-  return (
-    <div className={`flex items-center gap-3 ${right ? 'justify-end' : 'justify-start'}`}>
-      {right ? text : tag}
-      {right ? tag : text}
-    </div>
-  );
-}
 
 function Legend({ icon, children }: { icon: ReactNode; children: ReactNode }) {
   return (
@@ -54,9 +22,6 @@ function MatchPage() {
   const id = Number(useParams().id);
   const match = useMatch(id);
   const clubs = useClubs();
-
-  const acronymOf = (club: Club[] | undefined, clubId: number) =>
-    club?.find((item) => item.id === clubId)?.acronym ?? '';
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
@@ -78,34 +43,7 @@ function MatchPage() {
       >
         {match.data && (
           <>
-            <section
-              aria-label="Placar"
-              className="grid items-center gap-4 sm:grid-cols-[1fr_auto_1fr]"
-            >
-              <Team
-                side={match.data.home}
-                role="Mandante"
-                acronym={acronymOf(clubs.data, match.data.home.club_id)}
-                align="right"
-              />
-              <div className="flex flex-col items-center gap-1 text-center">
-                <p className="text-4xl font-semibold tabular-nums">
-                  {match.data.home.goals}×{match.data.away.goals}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {formatDateAndTime(match.data.played_at)}
-                </p>
-                <Badge variant="outline" className={RESULT_STYLE[match.data.result]}>
-                  {RESULT_LABELS[match.data.result]}
-                </Badge>
-              </div>
-              <Team
-                side={match.data.away}
-                role="Visitante"
-                acronym={acronymOf(clubs.data, match.data.away.club_id)}
-                align="left"
-              />
-            </section>
+            <MatchScoreboard match={match.data} clubs={clubs.data ?? []} />
 
             <section aria-label="Em campo" className="flex flex-col gap-3">
               <div className="flex flex-wrap items-end justify-between gap-2">

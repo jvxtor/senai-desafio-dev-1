@@ -5,6 +5,7 @@ import { DataState } from '../components/common/DataState';
 import { PageHeader } from '../components/common/PageHeader';
 import { FilterSelect } from '../components/filters/FilterSelect';
 import { Button } from '../components/ui/button';
+import { LastMatchCard } from '../features/matches/LastMatchCard';
 import { MatchesTable } from '../features/matches/MatchesTable';
 import { NewMatchDialog } from '../features/matches/NewMatchDialog';
 import { useClubs } from '../hooks/clubs';
@@ -43,6 +44,15 @@ function MatchesPage() {
         description="Jogue partidas entre clubes com os 5 titulares escalados e acompanhe o histórico."
         action={newMatchButton}
       />
+
+      {list[0] && (
+        <LastMatchCard
+          match={list[0]}
+          clubs={clubs.data ?? []}
+          clubName={clubOptions.find((option) => option.value === clubId)?.label}
+          onOpen={(match) => openMatch(match.id)}
+        />
+      )}
 
       <section
         aria-label="Lista de partidas"
