@@ -9,25 +9,19 @@ import {
 } from '../../components/ui/table';
 import { formatMoney } from '../../lib/format';
 import { cn } from '../../lib/utils';
-import type { Club, Condition, Player } from '../../services/types';
-import { CONDITION_LABELS, POSITION_LABELS } from './labels';
+import type { Club, Player } from '../../services/types';
+import { CONDITION_LABELS, CONDITION_STYLE, initialsOf, POSITION_LABELS } from './labels';
 import { PlayerActionsMenu } from './PlayerActionsMenu';
 
 interface PlayersTableProps {
   players: Player[];
   clubsById: Map<number, Club>;
-  onViewDetails: (player: Player) => void;
+  onSelect: (player: Player) => void;
   onBuy: (player: Player) => void;
   onEdit: (player: Player) => void;
   onChangeCondition: (player: Player) => void;
   onDelete: (player: Player) => void;
 }
-
-const CONDITION_STYLE: Record<Condition, string> = {
-  APTO: 'border-emerald-200 bg-emerald-50 text-emerald-700',
-  MAL_CONDICIONADO: 'border-amber-200 bg-amber-50 text-amber-700',
-  DOENTE: 'border-red-200 bg-red-50 text-red-700',
-};
 
 const HEADERS = [
   { label: 'Jogador', align: 'left' },
@@ -48,13 +42,6 @@ const ALIGN_CLASS = {
 } as const;
 
 const CELL = 'px-3 py-2.5';
-
-function initialsOf(name: string): string {
-  const words = name.split(' ').filter(Boolean);
-  const first = words[0]?.[0] ?? '';
-  const last = words.length > 1 ? (words[words.length - 1][0] ?? '') : '';
-  return `${first}${last}`.toUpperCase();
-}
 
 // As faixas são as da regra da agilidade: de 80 para cima o desconto cai, até 30 ele sobe.
 function agilityColor(agility: number): string {
@@ -103,7 +90,7 @@ function ClubCell({
 }
 
 export function PlayersTable(props: PlayersTableProps) {
-  const { players, clubsById, onViewDetails, onBuy, onEdit, onChangeCondition, onDelete } = props;
+  const { players, clubsById, onSelect, onBuy, onEdit, onChangeCondition, onDelete } = props;
 
   return (
     // O quadro é o único que rola (nos dois eixos); o cabeçalho fica fixo no topo dele.
@@ -132,7 +119,16 @@ export function PlayersTable(props: PlayersTableProps) {
           const conditionLabel = CONDITION_LABELS[player.condition];
 
           return (
-            <TableRow key={player.id}>
+            <TableRow
+              key={player.id}
+              className="cursor-pointer"
+              onClick={(event) => {
+                // Botões, o selo da condição e o menu de ações têm a própria ação.
+                const target = event.target as HTMLElement;
+                if (!target.closest('button, a, [role="menu"], [role="menuitem"]'))
+                  onSelect(player);
+              }}
+            >
               <TableCell className={CELL}>
                 <div className="flex items-center gap-2.5">
                   <span
@@ -141,7 +137,13 @@ export function PlayersTable(props: PlayersTableProps) {
                   >
                     {initialsOf(player.name)}
                   </span>
-                  <span className="font-medium">{player.name}</span>
+                  <button
+                    type="button"
+                    className="rounded-sm text-left font-medium outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50"
+                    onClick={() => onSelect(player)}
+                  >
+                    {player.name}
+                  </button>
                 </div>
               </TableCell>
               <TableCell className={CELL}>
@@ -189,7 +191,6 @@ export function PlayersTable(props: PlayersTableProps) {
                 <div className="flex justify-end">
                   <PlayerActionsMenu
                     player={player}
-                    onViewDetails={onViewDetails}
                     onEdit={onEdit}
                     onChangeCondition={onChangeCondition}
                     onBuy={onBuy}

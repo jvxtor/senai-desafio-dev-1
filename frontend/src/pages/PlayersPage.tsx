@@ -7,7 +7,7 @@ import { BuyPlayerDialog } from '../features/players/BuyPlayerDialog';
 import { ConditionDialog } from '../features/players/ConditionDialog';
 import { DeletePlayerDialog } from '../features/players/DeletePlayerDialog';
 import { PlayerCreatedDialog } from '../features/players/PlayerCreatedDialog';
-import { PlayerDetailsDialog } from '../features/players/PlayerDetailsDialog';
+import { PlayerDetailsSheet } from '../features/players/PlayerDetailsSheet';
 import { PlayerFormDialog } from '../features/players/PlayerFormDialog';
 import { PlayersFilterBar } from '../features/players/PlayersFilterBar';
 import { PlayersTable } from '../features/players/PlayersTable';
@@ -126,7 +126,7 @@ function PlayersPage() {
             <PlayersTable
               players={list}
               clubsById={clubsById}
-              onViewDetails={(player) => setDialog({ type: 'details', player })}
+              onSelect={(player) => setDialog({ type: 'details', player })}
               onBuy={(player) => setDialog({ type: 'buy', player })}
               onEdit={(player) => setDialog({ type: 'edit', player })}
               onChangeCondition={(player) => setDialog({ type: 'condition', player })}
@@ -170,12 +170,15 @@ function PlayersPage() {
         />
       )}
       {dialog?.type === 'details' && (
-        <PlayerDetailsDialog
+        <PlayerDetailsSheet
           player={dialog.player}
           clubName={
             dialog.player.club_id === null ? undefined : clubsById.get(dialog.player.club_id)?.name
           }
           onClose={close}
+          onEdit={(player) => setDialog({ type: 'edit', player })}
+          onChangeCondition={(player) => setDialog({ type: 'condition', player })}
+          onBuy={(player) => setDialog({ type: 'buy', player })}
         />
       )}
       {dialog?.type === 'edit' && <PlayerFormDialog player={dialog.player} onClose={close} />}

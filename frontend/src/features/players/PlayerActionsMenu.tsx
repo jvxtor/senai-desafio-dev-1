@@ -1,4 +1,4 @@
-import { Eye, HeartPulse, MoreHorizontal, Pencil, ShoppingCart, Trash2 } from 'lucide-react';
+import { HeartPulse, MoreHorizontal, Pencil, ShoppingCart, Trash2 } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 import {
   DropdownMenu,
@@ -13,7 +13,6 @@ import type { Player } from '../../services/types';
 
 interface PlayerActionsMenuProps {
   player: Player;
-  onViewDetails: (player: Player) => void;
   onEdit: (player: Player) => void;
   onChangeCondition: (player: Player) => void;
   onBuy: (player: Player) => void;
@@ -22,7 +21,7 @@ interface PlayerActionsMenuProps {
 
 // Todas as ações de uma linha. Comprar e excluir só valem para jogador livre.
 export function PlayerActionsMenu(props: PlayerActionsMenuProps) {
-  const { player, onViewDetails, onEdit, onChangeCondition, onBuy, onDelete } = props;
+  const { player, onEdit, onChangeCondition, onBuy, onDelete } = props;
   const isFree = player.club_id === null;
 
   return (
@@ -35,10 +34,6 @@ export function PlayerActionsMenu(props: PlayerActionsMenuProps) {
       <DropdownMenuContent align="end" className="w-60">
         <DropdownMenuGroup>
           <DropdownMenuLabel>{player.name}</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => onViewDetails(player)}>
-            <Eye aria-hidden="true" />
-            Ver detalhes
-          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => onEdit(player)}>
             <Pencil aria-hidden="true" />
             Editar
