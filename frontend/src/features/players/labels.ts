@@ -57,17 +57,13 @@ export function initialsOf(name: string): string {
   return `${first}${last}`.toUpperCase();
 }
 
-const AVATAR_TONES = [
-  'bg-pink-100 text-pink-700',
-  'bg-cyan-100 text-cyan-700',
-  'bg-violet-100 text-violet-700',
-  'bg-emerald-100 text-emerald-700',
-  'bg-slate-200 text-slate-700',
-];
+// Uma cor por posição, do goleiro ao atacante: avatar e selo usam a mesma, em toda a tela.
+const POSITION_TONE: Record<Position, string> = {
+  GOL: 'bg-amber-100 text-amber-800',
+  ZAG: 'bg-blue-100 text-blue-800',
+  LAT: 'bg-cyan-100 text-cyan-800',
+  MEI: 'bg-emerald-100 text-emerald-800',
+  ATA: 'bg-rose-100 text-rose-800',
+};
 
-/** Uma cor de avatar por nome: o mesmo jogador tem sempre a mesma cor. */
-export function avatarTone(name: string): string {
-  let hash = 0;
-  for (const char of name) hash = (hash * 31 + char.charCodeAt(0)) % 997;
-  return AVATAR_TONES[hash % AVATAR_TONES.length];
-}
+export const positionTone = (position: Position): string => POSITION_TONE[position];

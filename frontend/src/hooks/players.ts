@@ -1,6 +1,7 @@
 import {
   keepPreviousData,
   useMutation,
+  useQueries,
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
@@ -14,6 +15,7 @@ import {
 } from '../services/players';
 import type {
   Condition,
+  Position,
   CreatePlayerInput,
   PlayersFilters,
   UpdatePlayerInput,
@@ -34,6 +36,26 @@ export function usePlayer(id: number) {
   return useQuery({
     queryKey: queryKeys.players.detail(id),
     queryFn: () => getPlayer(id),
+  });
+}
+
+/**
+ * A posição de hoje de vários jogadores, pelo cadastro de cada um (as mesmas consultas do
+ * detalhe, então ficam em cache). Jogador que não carregou ou foi excluído fica de fora.
+ */
+export function usePlayerPositions(ids: number[]): Map<number, Position> {
+  return useQueries({
+    queries: ids.map((id) => ({
+      queryKey: queryKeys.players.detail(id),
+      queryFn: () => getPlayer(id),
+      retry: false,
+    })),
+    combine: (results) =>
+      new Map(
+        results.flatMap((result, index) =>
+          result.data ? [[ids[index], result.data.position] as const] : [],
+        ),
+      ),
   });
 }
 
