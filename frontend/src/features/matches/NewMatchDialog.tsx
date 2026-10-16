@@ -54,9 +54,9 @@ export function NewMatchDialog({ onClose, onPlayed }: NewMatchDialogProps) {
       { home_club_id: Number(home), away_club_id: Number(away) },
       {
         onSuccess: (match) => {
-          toast.success(
-            `${match.home.club_name} ${match.home.goals} × ${match.away.goals} ${match.away.club_name}.`,
-          );
+          toast.success('Partida jogada', {
+            description: `${match.home.club_name} ${match.home.goals} × ${match.away.goals} ${match.away.club_name}. Placar e duelos devolvidos pela API.`,
+          });
           onPlayed(match);
         },
       },

@@ -1,10 +1,10 @@
 import { Plus, Shield, Swords } from 'lucide-react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 import { DataState } from '../components/common/DataState';
 import { PageHeader } from '../components/common/PageHeader';
 import { FilterSelect } from '../components/filters/FilterSelect';
 import { Button } from '../components/ui/button';
-import { MatchDetailsSheet } from '../features/matches/MatchDetailsSheet';
 import { MatchesTable } from '../features/matches/MatchesTable';
 import { NewMatchDialog } from '../features/matches/NewMatchDialog';
 import { useClubs } from '../hooks/clubs';
@@ -13,7 +13,8 @@ import { useMatches } from '../hooks/matches';
 function MatchesPage() {
   const [clubId, setClubId] = useState('');
   const [creating, setCreating] = useState(false);
-  const [openMatchId, setOpenMatchId] = useState<number | null>(null);
+  const navigate = useNavigate();
+  const openMatch = (id: number) => void navigate(`/partidas/${id}`);
 
   const clubs = useClubs();
   const matches = useMatches(clubId ? Number(clubId) : undefined);
@@ -106,7 +107,7 @@ function MatchesPage() {
             </>
           }
         >
-          <MatchesTable matches={list} onSelect={(match) => setOpenMatchId(match.id)} />
+          <MatchesTable matches={list} onSelect={(match) => openMatch(match.id)} />
         </DataState>
       </section>
 
@@ -119,14 +120,8 @@ function MatchesPage() {
       {creating && (
         <NewMatchDialog
           onClose={() => setCreating(false)}
-          onPlayed={(match) => {
-            setCreating(false);
-            setOpenMatchId(match.id);
-          }}
+          onPlayed={(match) => openMatch(match.id)}
         />
-      )}
-      {openMatchId !== null && (
-        <MatchDetailsSheet matchId={openMatchId} onClose={() => setOpenMatchId(null)} />
       )}
     </div>
   );
