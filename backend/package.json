@@ -1,8 +1,8 @@
 {
-  "name": "backend",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "name": "passe-api",
+  "version": "1.0.0",
+  "description": "API do mercado de jogadores (NestJS, Prisma e PostgreSQL)",
+  "author": "João Victor",
   "private": true,
   "license": "UNLICENSED",
   "type": "module",

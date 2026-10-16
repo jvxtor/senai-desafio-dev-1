@@ -1,7 +1,7 @@
 {
-  "name": "frontend",
+  "name": "passe-web",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -49,5 +49,7 @@
     "typescript-eslint": "^8.69.0",
     "vite": "^8.3.0",
     "vitest": "^5.0.5"
-  }
+  },
+  "description": "Interface do mercado de jogadores (React e Vite)",
+  "author": "João Victor"
 }
