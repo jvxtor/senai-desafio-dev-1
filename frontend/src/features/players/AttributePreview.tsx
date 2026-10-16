@@ -1,25 +1,12 @@
 import { ChartNoAxesColumn } from 'lucide-react';
+import { AttributeBars, MAX_ATTRIBUTE, type AttributeKey } from './AttributeBars';
 import type { PlayerFormValues } from './validation';
 
 interface AttributePreviewProps {
   values: PlayerFormValues;
 }
 
-type Attribute = keyof Pick<
-  PlayerFormValues,
-  'pace' | 'shooting' | 'passing' | 'dribbling' | 'defending' | 'physical'
->;
-
-const ATTRIBUTES: { field: Attribute; label: string }[] = [
-  { field: 'pace', label: 'Velocidade' },
-  { field: 'shooting', label: 'Finalização' },
-  { field: 'passing', label: 'Passe' },
-  { field: 'dribbling', label: 'Drible' },
-  { field: 'defending', label: 'Defesa' },
-  { field: 'physical', label: 'Físico' },
-];
-
-const MAX_ATTRIBUTE = 99;
+const KEYS: AttributeKey[] = ['pace', 'shooting', 'passing', 'dribbling', 'defending', 'physical'];
 
 // Só desenha o que está digitado: um valor que ainda não é um inteiro de 1 a 99 fica vazio.
 function toScore(text: string): number | null {
@@ -31,10 +18,12 @@ function toScore(text: string): number | null {
   return valid ? value : null;
 }
 
-const toPercent = (score: number | null) => `${((score ?? 0) / MAX_ATTRIBUTE) * 100}%`;
-
 export function AttributePreview({ values }: AttributePreviewProps) {
   const potential = toScore(values.potential);
+  const scores = Object.fromEntries(KEYS.map((key) => [key, toScore(values[key])])) as Record<
+    AttributeKey,
+    number | null
+  >;
 
   return (
     <aside
@@ -46,30 +35,7 @@ export function AttributePreview({ values }: AttributePreviewProps) {
         Prévia dos atributos
       </h3>
 
-      <ul className="flex flex-col gap-2.5">
-        {ATTRIBUTES.map(({ field, label }) => {
-          const score = toScore(values[field]);
-
-          return (
-            <li key={field} className="grid grid-cols-[5.5rem_1fr_1.75rem] items-center gap-2">
-              <span className="text-sm">{label}</span>
-              <span aria-hidden="true" className="relative h-2 rounded-full">
-                <span
-                  data-slot="potential-range"
-                  className="absolute inset-y-0 left-0 rounded-full bg-primary/20"
-                  style={{ width: toPercent(potential) }}
-                />
-                <span
-                  data-slot="attribute-fill"
-                  className="absolute inset-y-0 left-0 rounded-full bg-primary"
-                  style={{ width: toPercent(score) }}
-                />
-              </span>
-              <span className="text-right text-sm font-semibold tabular-nums">{score ?? '–'}</span>
-            </li>
-          );
-        })}
-      </ul>
+      <AttributeBars scores={scores} potential={potential} />
 
       <p className="text-xs text-muted-foreground">
         {potential === null
