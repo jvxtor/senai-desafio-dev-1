@@ -16,7 +16,6 @@ import { MetricCard } from '../components/common/MetricCard';
 import { PageHeader } from '../components/common/PageHeader';
 import { buttonVariants } from '../components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
-import { LineupDialog } from '../features/clubs/LineupDialog';
 import { LineupPanel } from '../features/clubs/LineupPanel';
 import { SellPlayerDialog } from '../features/clubs/SellPlayerDialog';
 import { SquadTable } from '../features/clubs/SquadTable';
@@ -32,7 +31,6 @@ import { formatMoney } from '../lib/format';
 import type { Player, SquadPlayer } from '../services/types';
 
 type DialogState =
-  | { type: 'lineup' }
   | { type: 'sheet' | 'edit' | 'condition'; player: Player }
   | { type: 'sell'; player: SquadPlayer }
   | null;
@@ -95,6 +93,31 @@ function ClubPage() {
               icon={Shield}
               title={club.data.name}
               description={`Sigla ${club.data.acronym} · ${squad.length} ${squad.length === 1 ? 'jogador' : 'jogadores'} no elenco`}
+              aside={
+                <div className="grid grid-cols-3 gap-2 lg:flex">
+                  <MetricCard
+                    label="Caixa"
+                    icon={Wallet}
+                    value={formatMoney(club.data.cash)}
+                    caption="Só muda por compras e vendas"
+                    compact
+                  />
+                  <MetricCard
+                    label="Valor do elenco"
+                    icon={Users}
+                    value={formatMoney(club.data.squad_value)}
+                    caption="Soma do valor de mercado dos jogadores"
+                    compact
+                  />
+                  <MetricCard
+                    label="Patrimônio"
+                    icon={Landmark}
+                    value={formatMoney(club.data.net_worth)}
+                    caption="Caixa mais valor do elenco"
+                    compact
+                  />
+                </div>
+              }
               action={
                 <Link to={FREE_PLAYERS_URL} className={buttonVariants()}>
                   <ShoppingCart aria-hidden="true" />
@@ -102,27 +125,6 @@ function ClubPage() {
                 </Link>
               }
             />
-
-            <div className="grid shrink-0 gap-3 sm:grid-cols-3">
-              <MetricCard
-                label="Caixa"
-                icon={Wallet}
-                value={formatMoney(club.data.cash)}
-                caption="Só muda por compras e vendas"
-              />
-              <MetricCard
-                label="Valor do elenco"
-                icon={Users}
-                value={formatMoney(club.data.squad_value)}
-                caption="Soma do valor de mercado dos jogadores"
-              />
-              <MetricCard
-                label="Patrimônio"
-                icon={Landmark}
-                value={formatMoney(club.data.net_worth)}
-                caption="Caixa mais valor do elenco"
-              />
-            </div>
 
             <Tabs
               value={tab}
@@ -174,11 +176,12 @@ function ClubPage() {
 
               <TabsContent value="lineup" className="flex min-h-0 flex-1 flex-col">
                 <LineupPanel
+                  clubId={club.data.id}
+                  squad={squad}
                   lineup={lineup.data}
                   isPending={lineup.isPending}
                   error={lineup.error}
                   onRetry={() => void lineup.refetch()}
-                  onEdit={() => setDialog({ type: 'lineup' })}
                 />
               </TabsContent>
 
@@ -187,14 +190,6 @@ function ClubPage() {
               </TabsContent>
             </Tabs>
 
-            {dialog?.type === 'lineup' && (
-              <LineupDialog
-                clubId={club.data.id}
-                squad={squad}
-                lineup={lineup.data}
-                onClose={close}
-              />
-            )}
             {dialog?.type === 'sheet' && (
               <PlayerDetailsSheet
                 player={dialog.player}
