@@ -21,3 +21,12 @@ export function formatDateTime(value: string): string {
   const [, year, month, day, hour, minute] = match;
   return `${day}/${month}/${year} ${hour}:${minute}`;
 }
+
+/** Só a data da API ("2026-11-02T10:15:00-03:00") no formato "02/11/2026", sem converter fuso. */
+export function formatDate(value: string): string {
+  const match = API_DATE_TIME.exec(value);
+  if (!match) return value;
+
+  const [, year, month, day] = match;
+  return `${day}/${month}/${year}`;
+}

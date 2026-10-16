@@ -6,9 +6,9 @@ import {
   ShoppingCart,
   Tag,
   TrendingUp,
-  type LucideIcon,
 } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { MetricCard } from '../../components/common/MetricCard';
 import { Badge } from '../../components/ui/badge';
 import { Button } from '../../components/ui/button';
 import {
@@ -33,26 +33,6 @@ interface PlayerDetailsSheetProps {
   onEdit: (player: Player) => void;
   onChangeCondition: (player: Player) => void;
   onBuy: (player: Player) => void;
-}
-
-interface MetricCardProps {
-  label: string;
-  icon: LucideIcon;
-  value: string | number;
-  caption: string;
-}
-
-function MetricCard({ label, icon: Icon, value, caption }: MetricCardProps) {
-  return (
-    <div className="flex flex-col gap-1 rounded-xl border bg-background p-3">
-      <div className="flex items-center justify-between text-xs text-muted-foreground">
-        {label}
-        <Icon aria-hidden="true" className="size-3.5" />
-      </div>
-      <p className="text-xl font-semibold tabular-nums">{value}</p>
-      <p className="text-xs text-muted-foreground">{caption}</p>
-    </div>
-  );
 }
 
 function Fact({ label, children }: { label: string; children: ReactNode }) {

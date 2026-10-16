@@ -4,7 +4,7 @@ import { DialogFooter } from '../../components/ui/dialog';
 import { formatMoney } from '../../lib/format';
 import type { Player } from '../../services/types';
 import { POSITION_LABELS } from './labels';
-import { PlayerStat } from './PlayerStat';
+import { Stat } from '../../components/common/Stat';
 
 interface PlayerCreatedDialogProps {
   player: Player;
@@ -23,9 +23,9 @@ export function PlayerCreatedDialog({ player, onClose, onViewDetails }: PlayerCr
       description={`${player.name} entrou na lista como jogador livre.`}
     >
       <dl className="grid grid-cols-3 gap-4 rounded-xl border p-4">
-        <PlayerStat label="Posição">{POSITION_LABELS[player.position]}</PlayerStat>
-        <PlayerStat label="Overall">{player.overall}</PlayerStat>
-        <PlayerStat label="Valor base">{formatMoney(player.base_value)}</PlayerStat>
+        <Stat label="Posição">{POSITION_LABELS[player.position]}</Stat>
+        <Stat label="Overall">{player.overall}</Stat>
+        <Stat label="Valor base">{formatMoney(player.base_value)}</Stat>
       </dl>
 
       <DialogFooter>
