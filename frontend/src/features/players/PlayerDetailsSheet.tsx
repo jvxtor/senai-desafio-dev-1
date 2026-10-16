@@ -8,6 +8,7 @@ import {
   TrendingUp,
 } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { FactList, FactRow } from '../../components/common/FactRows';
 import { MetricCard } from '../../components/common/MetricCard';
 import { Badge } from '../../components/ui/badge';
 import { Button } from '../../components/ui/button';
@@ -33,15 +34,6 @@ interface PlayerDetailsSheetProps {
   onEdit: (player: Player) => void;
   onChangeCondition: (player: Player) => void;
   onBuy: (player: Player) => void;
-}
-
-function Fact({ label, children }: { label: string; children: ReactNode }) {
-  return (
-    <div className="flex items-center justify-between px-4 py-3">
-      <dt className="text-muted-foreground">{label}</dt>
-      <dd className="font-medium tabular-nums">{children}</dd>
-    </div>
-  );
 }
 
 function LegendItem({ swatch, children }: { swatch: string; children: ReactNode }) {
@@ -140,11 +132,11 @@ export function PlayerDetailsSheet(props: PlayerDetailsSheetProps) {
             </p>
           </section>
 
-          <dl className="divide-y rounded-xl border text-sm">
-            <Fact label="Idade">{player.age} anos</Fact>
-            <Fact label="Agilidade">{player.agility}</Fact>
-            <Fact label="Clube">{club}</Fact>
-          </dl>
+          <FactList>
+            <FactRow label="Idade">{player.age} anos</FactRow>
+            <FactRow label="Agilidade">{player.agility}</FactRow>
+            <FactRow label="Clube">{club}</FactRow>
+          </FactList>
         </div>
 
         <SheetFooter className="flex-row flex-wrap items-center gap-2 border-t">

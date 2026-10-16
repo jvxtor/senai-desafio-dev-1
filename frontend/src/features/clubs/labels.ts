@@ -11,3 +11,6 @@ export const MAX_CLUBS = 20;
 
 /** Caixa com que todo clube novo nasce (o padrão do banco). */
 export const INITIAL_CASH = 300;
+
+/** Teto da multa de rescisão, o mesmo que a API aplica na venda. */
+export const MAX_PENALTY = 10;

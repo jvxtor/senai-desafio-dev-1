@@ -30,3 +30,12 @@ export function formatDate(value: string): string {
   const [, year, month, day] = match;
   return `${day}/${month}/${year}`;
 }
+
+/** Data e hora da API no formato "04/04/2027, 15:45", sem converter fuso. */
+export function formatDateAndTime(value: string): string {
+  const match = API_DATE_TIME.exec(value);
+  if (!match) return value;
+
+  const [, year, month, day, hour, minute] = match;
+  return `${day}/${month}/${year}, ${hour}:${minute}`;
+}
