@@ -36,7 +36,6 @@ export const EMPTY_DRAFT: FilterDraft = {
 };
 
 export interface FilterErrors {
-  search?: string;
   age?: string;
   value?: string;
 }
@@ -101,9 +100,6 @@ export function buildPlayersFilters(
 ): Built {
   const errors: FilterErrors = {};
   const text = search.trim();
-  if (text.length === 1) {
-    errors.search = `Digite ao menos ${MIN_SEARCH_LENGTH} letras para buscar.`;
-  }
 
   const age = parseRange(
     draft.minAge,
@@ -152,6 +148,32 @@ const FILTER_KEYS = [
   'minValue',
   'maxValue',
 ] as const;
+
+/** Zera os campos do painel de filtros, sem mexer na busca, nas abas nem na ordenação. */
+export const PANEL_FILTERS_RESET: Partial<FilterDraft> = {
+  position: '',
+  condition: '',
+  clubId: '',
+  minAge: '',
+  maxAge: '',
+  minValue: '',
+  maxValue: '',
+};
+
+const BAR_FILTER_KEYS = [
+  'position',
+  'condition',
+  'clubId',
+  'minAge',
+  'maxAge',
+  'minValue',
+  'maxValue',
+] as const;
+
+/** Algum filtro da barra (busca, posição, condição, clube, idade ou valor) está em uso? */
+export function hasBarFilters(draft: FilterDraft, search: string): boolean {
+  return search.trim() !== '' || BAR_FILTER_KEYS.some((key) => draft[key] !== EMPTY_DRAFT[key]);
+}
 
 /** Há algum filtro além da ordenação? Define a mensagem de lista vazia. */
 export function hasActiveFilters(draft: FilterDraft, search: string): boolean {

@@ -4,6 +4,8 @@ import {
   buildPlayersFilters,
   EMPTY_DRAFT,
   hasActiveFilters,
+  hasBarFilters,
+  PANEL_FILTERS_RESET,
   type FilterDraft,
 } from './filters';
 
@@ -54,6 +56,11 @@ export function usePlayersFilters() {
     });
   }
 
+  function clearBarFilters() {
+    update(PANEL_FILTERS_RESET);
+    changeSearch('');
+  }
+
   function reset() {
     goToFirstPage();
     setDraft((current) => ({ ...EMPTY_DRAFT, sort: current.sort }));
@@ -66,9 +73,11 @@ export function usePlayersFilters() {
     errors,
     filters,
     isFiltering: hasActiveFilters(draft, searchInput),
+    hasBarFilters: hasBarFilters(draft, searchInput),
     setSearchInput: changeSearch,
     update,
     reset,
+    clearBarFilters,
     setPage: (value: number) => setPageState({ key: filtersKey, value }),
   };
 }
