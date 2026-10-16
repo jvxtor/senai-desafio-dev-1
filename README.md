@@ -35,6 +35,10 @@ Aplicação com backend (NestJS + Prisma), frontend (React + Vite) e banco Postg
    ```
 
 
+### Variáveis do frontend
+
+O frontend lê o endereço da API de `VITE_API_URL` (padrão `http://localhost:3000/api/v1`). O Compose repassa a variável do `.env` ao serviço `frontend`. Ela só precisa mudar se a API sair de `localhost:3000`, e deve ser um endereço que o **navegador** alcança (não `http://backend:3000`, que só existe dentro do Docker). Se a porta ou o endereço do frontend mudarem, atualize também `CORS_ORIGIN`. O Vite lê as variáveis ao iniciar: depois de mudar, reinicie com `docker compose up -d --force-recreate frontend`.
+
 ## Endereços
 
 | Serviço | URL |

@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3000/api/v1';
+const DEFAULT_API_URL = 'http://localhost:3000/api/v1';
+// Vazia ou ausente, vale o endereço padrão.
+const API_BASE_URL = import.meta.env.VITE_API_URL?.trim() || DEFAULT_API_URL;
 const REQUEST_TIMEOUT_MS = 15_000;
 const NETWORK_ERROR_MESSAGE = 'Não foi possível conectar à API.';
 
