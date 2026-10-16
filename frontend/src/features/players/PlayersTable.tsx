@@ -1,7 +1,4 @@
-import { Pencil, ShoppingCart, Trash2 } from 'lucide-react';
-import { IconButton } from '../../components/common/IconButton';
 import { Badge } from '../../components/ui/badge';
-import { Button } from '../../components/ui/button';
 import {
   Table,
   TableBody,
@@ -14,10 +11,12 @@ import { formatMoney } from '../../lib/format';
 import { cn } from '../../lib/utils';
 import type { Club, Condition, Player } from '../../services/types';
 import { CONDITION_LABELS, POSITION_LABELS } from './labels';
+import { PlayerActionsMenu } from './PlayerActionsMenu';
 
 interface PlayersTableProps {
   players: Player[];
   clubsById: Map<number, Club>;
+  onViewDetails: (player: Player) => void;
   onBuy: (player: Player) => void;
   onEdit: (player: Player) => void;
   onChangeCondition: (player: Player) => void;
@@ -78,7 +77,10 @@ function AgilityMeter({ agility }: { agility: number }) {
   );
 }
 
-function ClubCell({ player, clubsById }: Pick<PlayersTableProps, 'clubsById'> & { player: Player }) {
+function ClubCell({
+  player,
+  clubsById,
+}: Pick<PlayersTableProps, 'clubsById'> & { player: Player }) {
   if (player.club_id === null) {
     return (
       <Badge variant="outline" className="text-muted-foreground">
@@ -101,7 +103,7 @@ function ClubCell({ player, clubsById }: Pick<PlayersTableProps, 'clubsById'> & 
 }
 
 export function PlayersTable(props: PlayersTableProps) {
-  const { players, clubsById, onBuy, onEdit, onChangeCondition, onDelete } = props;
+  const { players, clubsById, onViewDetails, onBuy, onEdit, onChangeCondition, onDelete } = props;
 
   return (
     // O quadro é o único que rola (nos dois eixos); o cabeçalho fica fixo no topo dele.
@@ -127,7 +129,6 @@ export function PlayersTable(props: PlayersTableProps) {
       </TableHeader>
       <TableBody>
         {players.map((player) => {
-          const isFree = player.club_id === null;
           const conditionLabel = CONDITION_LABELS[player.condition];
 
           return (
@@ -185,30 +186,15 @@ export function PlayersTable(props: PlayersTableProps) {
                 <ClubCell player={player} clubsById={clubsById} />
               </TableCell>
               <TableCell className={CELL}>
-                <div className="flex items-center justify-end gap-1">
-                  {isFree && (
-                    <Button variant="outline" size="sm" onClick={() => onBuy(player)}>
-                      <ShoppingCart aria-hidden="true" />
-                      Comprar
-                    </Button>
-                  )}
-                  <IconButton
-                    label="Editar"
-                    ariaLabel={`Editar ${player.name}`}
-                    onClick={() => onEdit(player)}
-                  >
-                    <Pencil aria-hidden="true" />
-                  </IconButton>
-                  {isFree && (
-                    <IconButton
-                      label="Excluir"
-                      ariaLabel={`Excluir ${player.name}`}
-                      className="text-destructive hover:text-destructive"
-                      onClick={() => onDelete(player)}
-                    >
-                      <Trash2 aria-hidden="true" />
-                    </IconButton>
-                  )}
+                <div className="flex justify-end">
+                  <PlayerActionsMenu
+                    player={player}
+                    onViewDetails={onViewDetails}
+                    onEdit={onEdit}
+                    onChangeCondition={onChangeCondition}
+                    onBuy={onBuy}
+                    onDelete={onDelete}
+                  />
                 </div>
               </TableCell>
             </TableRow>

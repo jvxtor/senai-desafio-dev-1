@@ -5,7 +5,6 @@ import { FormError, SelectField, TextField } from '../../components/forms/fields
 import { Button } from '../../components/ui/button';
 import { DialogFooter } from '../../components/ui/dialog';
 import { useCreatePlayer, useUpdatePlayer } from '../../hooks/players';
-import { formatMoney } from '../../lib/format';
 import { getErrorMessage } from '../../lib/errors';
 import type { Player } from '../../services/types';
 import { AttributePreview } from './AttributePreview';
@@ -23,6 +22,8 @@ interface PlayerFormDialogProps {
   /** Com um jogador, o formulário edita. Sem ele, cadastra. */
   player?: Player;
   onClose: () => void;
+  /** Chamado com o jogador criado; quem chama decide o que mostrar depois do cadastro. */
+  onCreated?: (player: Player) => void;
 }
 
 type Field = keyof PlayerFormValues;
@@ -61,7 +62,7 @@ function toFormValues(player?: Player): PlayerFormValues {
   };
 }
 
-export function PlayerFormDialog({ player, onClose }: PlayerFormDialogProps) {
+export function PlayerFormDialog({ player, onClose, onCreated }: PlayerFormDialogProps) {
   const isEdit = player !== undefined;
   const create = useCreatePlayer();
   const update = useUpdatePlayer();
@@ -103,9 +104,11 @@ export function PlayerFormDialog({ player, onClose }: PlayerFormDialogProps) {
 
     create.mutate(toCreateInput(values), {
       onSuccess: (created) => {
-        toast.success(
-          `Jogador cadastrado. Overall ${created.overall} e valor base ${formatMoney(created.base_value)}.`,
-        );
+        if (onCreated) {
+          onCreated(created);
+          return;
+        }
+        toast.success('Jogador cadastrado.');
         onClose();
       },
     });
