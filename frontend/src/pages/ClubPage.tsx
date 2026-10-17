@@ -16,6 +16,7 @@ import { MetricCard } from '../components/common/MetricCard';
 import { PageHeader } from '../components/common/PageHeader';
 import { buttonVariants } from '../components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
+import { MAX_SQUAD_SIZE } from '../features/clubs/labels';
 import { LineupPanel } from '../features/clubs/LineupPanel';
 import { SellPlayerDialog } from '../features/clubs/SellPlayerDialog';
 import { SquadTable } from '../features/clubs/SquadTable';
@@ -95,6 +96,16 @@ function ClubPage() {
               description={`Sigla ${club.data.acronym} · ${squad.length} ${squad.length === 1 ? 'jogador' : 'jogadores'} no elenco`}
               aside={
                 <div className="grid grid-cols-3 gap-2 lg:flex">
+                  {/* Só em telas largas (1280px ou mais): abaixo disso o cabeçalho quebraria em duas linhas, e o contador do elenco já aparece na aba. */}
+                  <div className="hidden xl:block">
+                    <MetricCard
+                      label="Elenco"
+                      icon={Shirt}
+                      value={`${squad.length} de ${MAX_SQUAD_SIZE}`}
+                      caption="Jogadores no elenco, de no máximo 12"
+                      compact
+                    />
+                  </div>
                   <MetricCard
                     label="Caixa"
                     icon={Wallet}
